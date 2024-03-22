@@ -11,7 +11,10 @@
 
 #ifndef WORKERPROCESS_H
 #define WORKERPROCESS_H
+#include <memory>
 #include <sched.h>
+
+#include "ServerSocket.h"
 
 namespace vortex::core {
 class WorkerProcess {
@@ -23,8 +26,8 @@ public:
 
 private:
     pid_t pid = {};
+    std::unique_ptr<ServerSocket> socket = {};
 };
-}
-
+} // end vortex::core
 
 #endif //WORKERPROCESS_H

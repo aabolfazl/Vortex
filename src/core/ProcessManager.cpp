@@ -32,7 +32,6 @@ u_int ProcessManager::getCoresSize() {
 void ProcessManager::createWorkers() {
     const unsigned int numWorkers = std::thread::hardware_concurrency();
 
-
     for (unsigned int i = 0; i < numWorkers; ++i) {
         const pid_t pid = fork();
 

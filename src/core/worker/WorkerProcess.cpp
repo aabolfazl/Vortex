@@ -12,16 +12,19 @@
 #include "WorkerProcess.h"
 
 #include <iostream>
-#include <unistd.h>
 
 namespace vortex::core {
-WorkerProcess::WorkerProcess(const pid_t pid): pid(pid) {
+WorkerProcess::WorkerProcess(
+    const pid_t pid
+): pid(pid),
+   socket(std::make_unique<ServerSocket>()) {
 }
 
 void WorkerProcess::start() const {
-    std::cout << "Worker " << pid << ", sleeping for 10000 ms..." << std::endl;
-    usleep(10000 * 1000);
-    std::cout << "Worker " << pid << " finished." << std::endl;
+    std::cout << "Worker: " << pid << " started" << "\n";
+    socket->startListening(8080);
+    socket->eventLoop();
+
     _exit(0);
 }
 
