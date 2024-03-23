@@ -11,8 +11,6 @@
 
 #include "ServerSocket.h"
 
-#include <cmath>
-
 namespace vortex::core {
 ServerSocket::ServerSocket(): epoll(std::make_unique<event::EPoll>()) {
 }
@@ -54,6 +52,7 @@ void ServerSocket::startListening(const uint16_t port, const int backlog) {
 }
 
 void ServerSocket::onNewEvent(const int fd, const uint32_t events) {
+    std::cout << "onNewEvent: " << fd << std::endl;
     if (fd == socketFd) {
         auto clientFd = acceptConnection();
     } else {
@@ -66,6 +65,8 @@ void ServerSocket::eventLoop() const {
 }
 
 int ServerSocket::acceptConnection() const {
+    std::cout << "acceptConnection: " << std::endl;
+
     sockaddr_in clientAddr = {};
     socklen_t clientLen = sizeof(clientAddr);
     const int clientfd = accept(socketFd, reinterpret_cast<sockaddr *>(&clientAddr), &clientLen);
@@ -73,12 +74,10 @@ int ServerSocket::acceptConnection() const {
         throw std::runtime_error("Accept failed ");
     }
 
-    if (!makeNonBlocking(socketFd)) {
+    if (!makeNonBlocking(clientfd)) {
+        close(clientfd);
         throw std::runtime_error("Failed to make client socket non-blocking");
     }
-
-    char clientIP[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN);
 
     return clientfd;
 }

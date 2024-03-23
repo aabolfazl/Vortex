@@ -14,14 +14,17 @@
 #include <memory>
 
 #include "ProcessManager.h"
+#include <config/ConfigLoader.h>
 
 namespace vortex {
 class VortexApp {
 public:
+    explicit VortexApp(const std::string &configFile);
     void start();
 
 private:
     std::unique_ptr<core::ProcessManager> processManager = nullptr;
+    std::unique_ptr<core::config::ConfigLoader> loader;
 };
 } // vortex
 

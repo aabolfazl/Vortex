@@ -18,19 +18,14 @@
 #include <memory>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unordered_map>
 #include <sys/epoll.h>
 #include <./../event/EPoll.h>
-
-namespace vortex::event {
-class EPoll;
-}
+#include <config/ConfigLoader.h>
 
 namespace vortex::core {
 class ServerSocket {
 public:
-    ServerSocket();
+    explicit ServerSocket();
 
     ~ServerSocket();
 

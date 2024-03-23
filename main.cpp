@@ -12,7 +12,7 @@
 #include "src/VortexApp.h"
 
 int main() {
-    const auto server = new vortex::VortexApp();
+    const auto server = new vortex::VortexApp("/config.json");
     server->start();
 
     return 0;
