@@ -48,11 +48,15 @@ void ProcessManager::createWorkers() {
             auto childPid = getpid();
 
             if (sched_setaffinity(0, sizeof(cpu_set_t), &cpuset) == -1) {
-                std::cerr << "Failed to set CPU affinity: " << std::strerror(errno) << std::endl;
-                _exit(1);
+                throw std::runtime_error("Failed to set CPU affinity: " + std::string(std::strerror(errno)));
             }
 
-            const auto worker = std::make_unique<WorkerProcess>(childPid);
+            const char* configPath = getenv("config_file");
+            if (configPath == nullptr) {
+                throw std::runtime_error("Environment variable 'config_file' is not set");
+            }
+
+            const auto worker = std::make_unique<WorkerProcess>(childPid, configPath);
             worker->start();
         }
     }

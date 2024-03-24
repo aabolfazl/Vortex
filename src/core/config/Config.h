@@ -16,7 +16,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <string>
 #include <boost/json.hpp>
 
 namespace vortex::core::config {
@@ -34,7 +33,6 @@ struct Backend {
 };
 
 struct Listener {
-    std::string ip;
     int64_t port = 0;
 };
 

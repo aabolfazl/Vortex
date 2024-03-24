@@ -39,7 +39,7 @@ private:
     std::unique_ptr<event::EPoll> epoll;
 
     static auto makeNonBlocking(int fd) -> bool;
-    auto onNewEvent(int fd, uint32_t events) -> void;
+    auto onNewEvent(int fd, uint32_t events) const -> void;
 };
 }
 #endif //SERVER_SOCKET_H

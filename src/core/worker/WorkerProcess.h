@@ -19,7 +19,7 @@
 namespace vortex::core {
 class WorkerProcess {
 public:
-    explicit WorkerProcess(pid_t pid_);
+    explicit WorkerProcess(pid_t pid, const std::string &configFile);
     ~WorkerProcess();
 
     void start() const;
@@ -27,6 +27,7 @@ public:
 private:
     pid_t pid = {};
     std::unique_ptr<ServerSocket> socket = {};
+    std::unique_ptr<config::ConfigLoader> configLoader;
 };
 } // end vortex::core
 

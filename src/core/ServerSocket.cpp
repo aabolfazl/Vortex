@@ -13,6 +13,9 @@
 
 namespace vortex::core {
 ServerSocket::ServerSocket(): epoll(std::make_unique<event::EPoll>()) {
+    epoll->setEventHandler([this](const int fd, const uint32_t events) {
+        this->onNewEvent(fd, events);
+    });
 }
 
 void ServerSocket::startListening(const uint16_t port, const int backlog) {
@@ -38,7 +41,7 @@ void ServerSocket::startListening(const uint16_t port, const int backlog) {
     addr.sin_port = htons(port);
 
     if (bind(socketFd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0) {
-        throw std::runtime_error("Bind failed");
+        throw std::runtime_error("Bind failed" + std::string(strerror(errno)));
     }
 
     if (listen(socketFd, backlog) < 0) {
@@ -46,13 +49,10 @@ void ServerSocket::startListening(const uint16_t port, const int backlog) {
     }
 
     epoll->add(socketFd);
-    epoll->setEventHandler([this](int fd, uint32_t events) {
-        this->onNewEvent(fd, events);
-    });
 }
 
-void ServerSocket::onNewEvent(const int fd, const uint32_t events) {
-    std::cout << "onNewEvent: " << fd << std::endl;
+void ServerSocket::onNewEvent(const int fd, const uint32_t events) const {
+    std::cout << "onNewEvent: " << fd << " " << events << std::endl;
     if (fd == socketFd) {
         auto clientFd = acceptConnection();
     } else {

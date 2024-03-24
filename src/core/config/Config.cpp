@@ -17,7 +17,6 @@ std::shared_ptr<Config> Config::fromJson(boost::json::object &object) {
     auto configData = std::make_shared<Config>();
 
     auto &listenerObj = object["listener"].as_object();
-    configData->listener.ip = listenerObj["ip"].as_string().c_str();
     configData->listener.port = listenerObj["port"].as_int64();
 
     auto &backendsArray = object["backends"].as_array();

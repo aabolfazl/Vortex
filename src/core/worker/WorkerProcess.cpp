@@ -15,14 +15,20 @@
 
 namespace vortex::core {
 WorkerProcess::WorkerProcess(
-    const pid_t pid
+    const pid_t pid,
+    const std::string &configFile
 ): pid(pid),
-   socket(std::make_unique<ServerSocket>()) {
+   socket(std::make_unique<ServerSocket>()),
+   configLoader(std::make_unique<config::ConfigLoader>(configFile)) {
 }
 
 void WorkerProcess::start() const {
-    std::cout << "Worker: " << pid << " started" << "\n";
-    socket->startListening(8080);
+    const std::shared_ptr<config::Config> congif = configLoader->load();
+
+
+    std::cout << "Worker: " << pid << " started with " << congif->strategy << "\n";
+
+    socket->startListening(congif->listener.port);
     socket->eventLoop();
 
     _exit(0);

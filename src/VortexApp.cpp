@@ -19,15 +19,11 @@
 namespace vortex {
 VortexApp::VortexApp(
     const std::string &configFile
-) : loader(std::make_unique<core::config::ConfigLoader>(configFile)) {
+) {
+    setenv("config_file", configFile.data(), 1);
 }
 
 void VortexApp::start() {
-    const std::shared_ptr<core::config::Config> congif = loader->load();
-
-    // test config
-    std::cout << congif->backends.at(0).ip << std::endl;
-
     processManager = std::make_unique<core::ProcessManager>();
     processManager->createWorkers();
 }

@@ -24,7 +24,6 @@ public:
 
 private:
     std::unique_ptr<core::ProcessManager> processManager = nullptr;
-    std::unique_ptr<core::config::ConfigLoader> loader;
 };
 } // vortex
 
