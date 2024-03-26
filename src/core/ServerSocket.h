@@ -19,24 +19,30 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/epoll.h>
-#include <./../event/EPoll.h>
+#include "Event.h"
 #include <config/ConfigLoader.h>
 
 namespace vortex::core {
-class ServerSocket {
+class ServerSocket final {
 public:
-    explicit ServerSocket();
-
+    explicit ServerSocket(
+        uint16_t readBufferSize,
+        uint16_t writeBufferSize,
+        int64_t port
+    );
     ~ServerSocket();
 
-    auto startListening(uint16_t port, int backlog = SOMAXCONN) -> void;
-    auto eventLoop() const -> void;
+    auto handleEvent(const Event* event, uint32_t events) const -> void;
+    auto startListening(int backlog = SOMAXCONN) -> int;
     auto acceptConnection() const -> int;
+
+    std::function<void(int fd)> onClientAccepted;
 
 private:
     int socketFd{-1};
-    int epollFd{-1};
-    std::unique_ptr<event::EPoll> epoll;
+    uint16_t readBufferSize;
+    uint16_t writeBufferSize;
+    uint16_t port;
 
     static auto makeNonBlocking(int fd) -> bool;
     auto onNewEvent(int fd, uint32_t events) const -> void;

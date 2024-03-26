@@ -13,25 +13,26 @@
 #define EPOLL_H
 #include <cstdint>
 #include <functional>
+#include <sys/epoll.h>
+
+#include "EventListener.h"
 
 namespace vortex::event {
 constexpr int MAX_EVENTS = 10;
 
 class EPoll {
 public:
-    using EventHandler = std::function<void(int fd, uint32_t events)>;
-
     EPoll();
     ~EPoll();
 
-    void add(int fd) const;
-    void remove(int fd) const;
-    void wait() const;
-    void setEventHandler(const EventHandler&handler);
+    auto addListenerSocket(Event* event) const -> void;
+    auto remove(int fd) const -> void;
+    auto wait() const -> void;
+
+    std::function<void(epoll_event event)> eventHandler;
 
 private:
     int epollFd = {-1};
-    EventHandler eventHandler;
 };
 }
 

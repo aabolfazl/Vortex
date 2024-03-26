@@ -10,15 +10,30 @@
  */
 
 #include "ServerSocket.h"
+#include <arpa/inet.h>
 
 namespace vortex::core {
-ServerSocket::ServerSocket(): epoll(std::make_unique<event::EPoll>()) {
-    epoll->setEventHandler([this](const int fd, const uint32_t events) {
-        this->onNewEvent(fd, events);
-    });
+ServerSocket::ServerSocket(
+    const uint16_t readBufferSize,
+    const uint16_t writeBufferSize,
+    const int64_t port
+): readBufferSize(readBufferSize),
+   writeBufferSize(writeBufferSize),
+   port(port) {
 }
 
-void ServerSocket::startListening(const uint16_t port, const int backlog) {
+auto ServerSocket::handleEvent(const Event* event, const uint32_t events) const -> void {
+    if (event->fd == socketFd) {
+        const auto clientFd = acceptConnection();
+        if (onClientAccepted) {
+            onClientAccepted(clientFd);
+        }
+    }
+}
+
+auto ServerSocket::startListening(const int backlog) -> int {
+    std::cout << "startListening: " << port << std::endl;
+
     socketFd = socket(AF_INET, SOCK_STREAM, 0);
     if (socketFd < 0) {
         throw std::runtime_error("Failed to create socket");
@@ -48,20 +63,7 @@ void ServerSocket::startListening(const uint16_t port, const int backlog) {
         throw std::runtime_error("Failed to listen on socket");
     }
 
-    epoll->add(socketFd);
-}
-
-void ServerSocket::onNewEvent(const int fd, const uint32_t events) const {
-    std::cout << "onNewEvent: " << fd << " " << events << std::endl;
-    if (fd == socketFd) {
-        auto clientFd = acceptConnection();
-    } else {
-        // read data from client
-    }
-}
-
-void ServerSocket::eventLoop() const {
-    epoll->wait();
+    return socketFd;
 }
 
 int ServerSocket::acceptConnection() const {

@@ -57,6 +57,11 @@ struct Timeouts {
     int64_t write = 0;
 };
 
+struct Buffers {
+    int64_t readBufferSize = 0;
+    int64_t writeBufferSize = 0;
+};
+
 class Config {
 public:
     Listener listener;
@@ -65,6 +70,7 @@ public:
     Logging logging;
     Timeouts timeouts;
     ResourceLimits resource_limits;
+    Buffers buffers;
 
     static auto fromJson(boost::json::object &object) -> std::shared_ptr<Config>;
 };

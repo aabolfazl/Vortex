@@ -24,18 +24,18 @@ EPoll::EPoll() {
     }
 }
 
-void EPoll::setEventHandler(const EventHandler&handler) {
-    this->eventHandler = handler;
-}
+void EPoll::addListenerSocket(Event* event) const {
+    constexpr uint32_t events = EPOLLOUT | EPOLLIN | EPOLLRDHUP | EPOLLERR | EPOLLET;
 
-void EPoll::add(const int fd) const {
-    epoll_event event{
-        .events = EPOLLIN,
-        .data = {.fd = fd}
-    };
+    epoll_event epoll_event{};
+    epoll_event.events = events;
+    epoll_event.data = {};
+    epoll_event.data.ptr = event;
 
-    if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &event) < 0) {
-        throw std::runtime_error("Failed to add file descriptor to epoll");
+    std::cout << "addListenerSocket: " << event->type << std::endl;
+
+    if (epoll_ctl(epollFd, EPOLL_CTL_ADD, event->fd, &epoll_event) < 0) {
+        throw std::runtime_error("Failed to add ListenerSocket to epoll");
     }
 }
 
@@ -52,14 +52,15 @@ void EPoll::wait() const {
 
     while (true) {
         std::vector<epoll_event> events(MAX_EVENTS);
-        const int nEvents = epoll_wait(epollFd, events.data(), MAX_EVENTS, -1);
-        if (nEvents == -1) {
-            throw std::runtime_error("Epoll wait error");
+        const int eventsCount = epoll_wait(epollFd, events.data(), MAX_EVENTS, -1);
+
+        if (eventsCount == -1) {
+            std::cerr << "Epoll wait error" << std::endl;
+            continue;
         }
-        for (int i = 0; i < nEvents; ++i) {
-            const int fd = events[i].data.fd;
-            const uint32_t eventTypes = events[i].events;
-            eventHandler(fd, eventTypes);
+
+        for (int i = 0; i < eventsCount; i++) {
+            eventHandler(events[i]);
         }
     }
 }

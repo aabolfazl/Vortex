@@ -22,7 +22,7 @@ add_library(core STATIC
         config/Config.h
 )
 
-target_include_directories(core PUBLIC ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(core PUBLIC ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ./../event/)
 
 target_link_libraries(core Boost::json)
 target_compile_features(core PUBLIC cxx_std_17)

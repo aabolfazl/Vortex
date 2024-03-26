@@ -16,22 +16,56 @@
 namespace vortex::core {
 WorkerProcess::WorkerProcess(
     const pid_t pid,
-    const std::string &configFile
+    const std::string &configPath
 ): pid(pid),
-   socket(std::make_unique<ServerSocket>()),
-   configLoader(std::make_unique<config::ConfigLoader>(configFile)) {
+   configLoader(std::make_unique<config::ConfigLoader>(configPath)),
+   epoll(std::make_unique<event::EPoll>()) {
+    const auto config = configLoader->load();
+    const auto [readBuffer, writeBuffer] = config->buffers;
+    const auto port = config->listener.port;
+
+    socket = std::make_unique<ServerSocket>(readBuffer, writeBuffer, port);
+
+    socket->onClientAccepted = [this](const int fd) {
+        this->onNewClientConected(fd);
+    };
+
+    epoll->eventHandler = [this](const epoll_event event) {
+        this->onNewEvent(event);
+    };
+}
+
+auto WorkerProcess::onNewEvent(const epoll_event epollEvent) const -> void {
+    std::cout << "onNewEvent: " << epollEvent.events << std::endl;
+
+    const auto event = static_cast<Event *>(epollEvent.data.ptr);
+
+    switch (event->type) {
+        case ListenrSocket: {
+            socket->handleEvent(event, epollEvent.events);
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 void WorkerProcess::start() const {
-    const std::shared_ptr<config::Config> congif = configLoader->load();
+    try {
+        const auto socketFd = socket->startListening();
+        const auto event = new Event(ListenrSocket, socketFd);
+        epoll->addListenerSocket(event);
+    } catch (const std::exception &e) {
+        std::cerr << "Failed to startListening: " << e.what() << std::endl;
+    }
 
-
-    std::cout << "Worker: " << pid << " started with " << congif->strategy << "\n";
-
-    socket->startListening(congif->listener.port);
-    socket->eventLoop();
+    epoll->wait();
 
     _exit(0);
+}
+
+auto WorkerProcess::onNewClientConected(const int fd) -> void {
+    std::cerr << "onNewClientConected " << fd << std::endl;
 }
 
 WorkerProcess::~WorkerProcess() = default;

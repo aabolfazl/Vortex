@@ -14,12 +14,13 @@
 #include <memory>
 #include <sched.h>
 
+#include "EPoll.h"
 #include "ServerSocket.h"
 
 namespace vortex::core {
 class WorkerProcess {
 public:
-    explicit WorkerProcess(pid_t pid, const std::string &configFile);
+    explicit WorkerProcess(pid_t pid, const std::string &configPath);
     ~WorkerProcess();
 
     void start() const;
@@ -28,6 +29,10 @@ private:
     pid_t pid = {};
     std::unique_ptr<ServerSocket> socket = {};
     std::unique_ptr<config::ConfigLoader> configLoader;
+    std::unique_ptr<event::EPoll> epoll;
+
+    auto onNewEvent(epoll_event epollEvent) const -> void;
+    auto onNewClientConected(int fd) -> void;
 };
 } // end vortex::core
 

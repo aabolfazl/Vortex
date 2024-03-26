@@ -52,6 +52,10 @@ std::shared_ptr<Config> Config::fromJson(boost::json::object &object) {
     configData->resource_limits.max_connections = resourceLimitsObj["max_connections"].as_int64();
     configData->resource_limits.max_files = resourceLimitsObj["max_files"].as_int64();
 
+    auto &bufersObj = object["buffers"].as_object();
+    configData->buffers.readBufferSize = bufersObj["read_buffer_size"].as_int64();
+    configData->buffers.writeBufferSize = bufersObj["write_buffer_size"].as_int64();
+
     return configData;
 }
 }

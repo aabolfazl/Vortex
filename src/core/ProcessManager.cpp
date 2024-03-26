@@ -56,8 +56,8 @@ void ProcessManager::createWorkers() {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }
 
-            const auto worker = std::make_unique<WorkerProcess>(childPid, configPath);
-            worker->start();
+            const auto worker = WorkerProcess(childPid, configPath);
+            worker.start();
         }
     }
 
