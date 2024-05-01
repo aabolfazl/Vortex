@@ -30,7 +30,7 @@ u_int ProcessManager::getCoresSize() {
 }
 
 void ProcessManager::createWorkers() {
-    const unsigned int numWorkers = std::thread::hardware_concurrency();
+    const unsigned int numWorkers = getCoresSize();
 
     for (unsigned int i = 0; i < numWorkers; ++i) {
         const pid_t pid = fork();
@@ -38,7 +38,7 @@ void ProcessManager::createWorkers() {
         if (pid == -1) {
             std::cerr << "Failed to fork" << std::endl;
         } else if (pid > 0) {
-            std::cout << "master-> " << pid << std::endl;
+            std::cout << "process " << pid << " started." << std::endl;
             workerProcesses.push_back(pid);
         } else {
             cpu_set_t cpuset;
@@ -51,7 +51,7 @@ void ProcessManager::createWorkers() {
                 throw std::runtime_error("Failed to set CPU affinity: " + std::string(std::strerror(errno)));
             }
 
-            const char* configPath = getenv("config_file");
+            const char *configPath = getenv("config_file");
             if (configPath == nullptr) {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }

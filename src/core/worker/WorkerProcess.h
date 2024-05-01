@@ -11,28 +11,24 @@
 
 #ifndef WORKERPROCESS_H
 #define WORKERPROCESS_H
+
 #include <memory>
 #include <sched.h>
-
-#include "EPoll.h"
-#include "ServerSocket.h"
+#include "TcpServer.h"
 
 namespace vortex::core {
 class WorkerProcess {
 public:
     explicit WorkerProcess(pid_t pid, const std::string &configPath);
+
     ~WorkerProcess();
 
     void start() const;
 
 private:
-    pid_t pid = {};
-    std::unique_ptr<ServerSocket> socket = {};
-    std::unique_ptr<config::ConfigLoader> configLoader;
-    std::unique_ptr<event::EPoll> epoll;
-
-    auto onNewEvent(epoll_event epollEvent) const -> void;
-    auto onNewClientConected(int fd) -> void;
+    std::unique_ptr<core::TcpServer> server;
+    std::shared_ptr<config::ConfigLoader> configLoader;
+    std::shared_ptr<event::EventLoop> eventLoop;
 };
 } // end vortex::core
 

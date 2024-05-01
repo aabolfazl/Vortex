@@ -10,10 +10,6 @@
  */
 
 #include "VortexApp.h"
-
-#include <memory>
-#include "memory"
-#include "ServerSocket.h"
 #include <thread>
 
 namespace vortex {

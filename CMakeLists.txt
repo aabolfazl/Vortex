@@ -10,6 +10,6 @@ add_subdirectory(src/event)
 add_executable(Vortex main.cpp
         src/VortexApp.cpp
         src/VortexApp.h
-        src/Defines.h)
+)
 
 target_link_libraries(${PROJECT_NAME} core event)

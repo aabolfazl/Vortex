@@ -12,14 +12,20 @@ endif ()
 add_library(core STATIC
         ProcessManager.cpp
         ProcessManager.h
-        ServerSocket.cpp
-        ServerSocket.h
         worker/WorkerProcess.cpp
         worker/WorkerProcess.h
         config/ConfigLoader.cpp
         config/ConfigLoader.h
         config/Config.cpp
         config/Config.h
+        ../Vortex.h
+        utils.h
+        TcpServer.cpp
+        TcpServer.h
+        Socket.cpp
+        Socket.h
+        ConnectionAcceptor.cpp
+        ConnectionAcceptor.h
 )
 
 target_include_directories(core PUBLIC ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ./../event/)
