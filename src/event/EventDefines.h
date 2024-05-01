@@ -9,5 +9,11 @@
  *
  */
 
-#include "Event.h"
+#ifndef VORTEX_EVENTDEFINES_H
+#define VORTEX_EVENTDEFINES_H
 
+#define EVENT_ACCEPT    (1U << 0)    // 1 (0001)
+#define EVENT_READ    (1U << 1)    // 2 (0010)
+#define EVENT_WRITE    (1U << 2)    // 4 (0100)
+
+#endif //VORTEX_EVENTDEFINES_H
