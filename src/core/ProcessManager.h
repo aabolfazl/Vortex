@@ -14,6 +14,7 @@
 
 #include <mutex>
 #include <vector>
+#include <sys/types.h>
 
 namespace vortex::core {
 class ProcessManager {

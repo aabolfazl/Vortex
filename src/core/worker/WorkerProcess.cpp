@@ -18,7 +18,7 @@ WorkerProcess::WorkerProcess(
     const pid_t pid,
     const std::string &configPath
 ) : configLoader(std::make_unique<config::ConfigLoader>(configPath)),
-    eventLoop(std::make_shared<event::EventLoop>()) {
+    eventLoop(std::make_shared<event::IoUringWorker>()) {
     server = std::make_unique<TcpServer>(
         configLoader,
         eventLoop

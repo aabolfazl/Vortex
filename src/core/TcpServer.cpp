@@ -14,30 +14,31 @@
 #include <thread>
 
 namespace vortex::core {
-
 TcpServer::TcpServer(
-    const std::shared_ptr<config::ConfigLoader> &configLoader,
-    const std::shared_ptr<event::EventLoop> &eventLoop
-) : config(configLoader->load()), eventLoop(eventLoop) {
+    const std::shared_ptr<config::ConfigLoader>& configLoader,
+    const event::IoUringWorkerPtr& ioUringWorker
+) : ioUringWorker(ioUringWorker), config(configLoader->load()) {
     const auto port = config->listener.port;
 
-    acceptor = std::make_unique<ConnectionAcceptor>(eventLoop, port);
-    acceptor->setAcceptCallback(std::bind(&TcpServer::onNewConnection, this, std::placeholders::_1));
+    acceptor = std::make_unique<ConnectionAcceptor>(ioUringWorker, port);
+    acceptor->setAcceptCallback([this](const int fd) {
+        onNewConnection(fd);
+    });
 }
 
 auto TcpServer::onNewConnection(int fd) -> void {
-    std::cerr << "onNewClientConnected " << fd << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::cout << "onNewClientConnected " << fd << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    const std::string msg = "Hi man fd: " + std::to_string(fd) + "\n";
+
+    write(fd, msg.data(), msg.size());
     close(fd);
-    std::cerr << "onNewClientClosed " << fd << std::endl;
+    std::cout << "onNewClientClosed " << fd << std::endl;
 }
 
 auto TcpServer::start() -> void {
-    eventLoop->loop();
+    ioUringWorker->loop();
 }
 
-auto TcpServer::stop() -> void {
-
-}
-
+auto TcpServer::stop() -> void {}
 }

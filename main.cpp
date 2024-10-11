@@ -10,10 +10,23 @@
  */
 
 #include "src/VortexApp.h"
+#include <iostream>
+#include <fstream>
 
-int main() {
-    auto server = vortex::VortexApp("/tmp/tmp.n6jnGyBKxE/config/config.json");
+int main(const int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <config-file-path>" << std::endl;
+        return 1;
+    }
 
+    const std::string configFilePath = argv[1];
+
+    if (!std::ifstream(configFilePath)) {
+        std::cerr << "Config file not found: " << configFilePath << std::endl;
+        return 1;
+    }
+
+    auto server = vortex::VortexApp(configFilePath);
     server.start();
 
     return 0;

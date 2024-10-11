@@ -45,7 +45,7 @@ auto Socket::bind(uint16_t port) const -> void {
 
 auto Socket::listen() const -> void {
     assert(socketFd > 0);
-    int ret = ::listen(socketFd, SOMAXCONN);
+   const int ret = ::listen(socketFd, SOMAXCONN);
     if (ret < 0) {
         _exit(EXIT_FAILURE);
     }
@@ -64,18 +64,18 @@ auto Socket::accept() const -> int {
     return peerFd;
 }
 
-auto Socket::read(uint8_t *buffer, uint64_t len) const -> size_t {
+auto Socket::read(uint8_t *buffer, const uint64_t len) const -> size_t {
     return ::read(socketFd, buffer, len);
 }
 
-auto Socket::setReuseAddress(bool val) const -> int {
-    int opt = val ? 1 : 0;
-    return ::setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &opt, static_cast<socklen_t>(sizeof opt));
+auto Socket::setReuseAddress(const bool val) const -> int {
+    const int opt = val ? 1 : 0;
+    return ::setsockopt(socketFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof opt);
 }
 
-auto Socket::setReusePort(bool val) const -> int {
-    int opt = val ? 1 : 0;
-    return ::setsockopt(socketFd, SOL_SOCKET, SO_REUSEPORT, &opt, static_cast<socklen_t>(sizeof opt));
+auto Socket::setReusePort(const bool val) const -> int {
+    const int opt = val ? 1 : 0;
+    return ::setsockopt(socketFd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof opt);
 }
 
 auto Socket::setNonBlocking() const -> int {

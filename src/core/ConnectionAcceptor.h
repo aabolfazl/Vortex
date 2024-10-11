@@ -15,43 +15,38 @@
 #include "Socket.h"
 #include <memory>
 #include <functional>
-#include "iostream"
-#include "EventLoop.h"
-#include "EventHandler.h"
+
+#include "IoUringSocket.h"
+#include "IoUringWorker.h"
 
 namespace vortex::core {
 
-using AcceptCallback = std::function<void(int fd)>;
-
-class ConnectionAcceptor : event::EventInterface {
+class ConnectionAcceptor final {
 public:
     explicit ConnectionAcceptor(
-        const std::shared_ptr<event::EventLoop> &eventLoop,
+        const event::IoUringWorkerPtr& workerPtr,
         uint16_t port
     );
 
     ~ConnectionAcceptor();
 
-    ConnectionAcceptor(ConnectionAcceptor &&) noexcept(true) = default;
+    ConnectionAcceptor(ConnectionAcceptor&&) noexcept(true) = default;
 
-    ConnectionAcceptor &operator=(ConnectionAcceptor &&) noexcept(true) = default;
+    ConnectionAcceptor& operator=(ConnectionAcceptor&&) noexcept(true) = default;
 
-    auto setAcceptCallback(const AcceptCallback &callback) -> void;
+    auto setAcceptCallback(const event::AcceptCallback& callback) const -> void;
 
-    auto listen() -> void;
+    auto listen() const -> void;
 
-    auto fd() -> int {
+    auto fd() const -> int {
         return socket->getFd();
     }
 
-    bool onEvent(const std::any &event) override;
-
 private:
-    std::unique_ptr<core::Socket> socket;
+    std::unique_ptr<Socket> socket;
+    event::IoUringSocket* ioUringSocket;
 
-    AcceptCallback acceptCallback;
-
-    auto onRead() -> void;
+    auto onRead() const -> void;
 };
 }
 

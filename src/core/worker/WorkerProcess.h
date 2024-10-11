@@ -26,9 +26,9 @@ public:
     void start() const;
 
 private:
-    std::unique_ptr<core::TcpServer> server;
+    std::unique_ptr<TcpServer> server;
     std::shared_ptr<config::ConfigLoader> configLoader;
-    std::shared_ptr<event::EventLoop> eventLoop;
+    event::IoUringWorkerPtr eventLoop;
 };
 } // end vortex::core
 

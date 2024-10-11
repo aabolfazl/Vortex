@@ -1,0 +1,62 @@
+[
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/ProcessManager.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/ProcessManager.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/ProcessManager.cpp",
+    "output": "src/core/CMakeFiles/core.dir/ProcessManager.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/worker/WorkerProcess.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/worker/WorkerProcess.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/worker/WorkerProcess.cpp",
+    "output": "src/core/CMakeFiles/core.dir/worker/WorkerProcess.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/config/ConfigLoader.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/config/ConfigLoader.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/config/ConfigLoader.cpp",
+    "output": "src/core/CMakeFiles/core.dir/config/ConfigLoader.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/config/Config.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/config/Config.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/config/Config.cpp",
+    "output": "src/core/CMakeFiles/core.dir/config/Config.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/TcpServer.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/TcpServer.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/TcpServer.cpp",
+    "output": "src/core/CMakeFiles/core.dir/TcpServer.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/Socket.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/Socket.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/Socket.cpp",
+    "output": "src/core/CMakeFiles/core.dir/Socket.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -DBOOST_CONTAINER_DYN_LINK -DBOOST_CONTAINER_NO_LIB -DBOOST_JSON_DYN_LINK -DBOOST_JSON_NO_LIB -I/home/abolfazl/CLionProjects/Vortex/src/core -I/home/abolfazl/CLionProjects/Vortex/src/core/./../event -g -std=gnu++17 -fdiagnostics-color=always -o src/core/CMakeFiles/core.dir/ConnectionAcceptor.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/core/ConnectionAcceptor.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/core/ConnectionAcceptor.cpp",
+    "output": "src/core/CMakeFiles/core.dir/ConnectionAcceptor.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -I/home/abolfazl/CLionProjects/Vortex/src/event -g -std=gnu++17 -fdiagnostics-color=always -o src/event/CMakeFiles/event.dir/EventLoop.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/event/EventLoop.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/event/EventLoop.cpp",
+    "output": "src/event/CMakeFiles/event.dir/EventLoop.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -I/home/abolfazl/CLionProjects/Vortex/src/event -g -std=gnu++17 -fdiagnostics-color=always -o src/event/CMakeFiles/event.dir/EventHandler.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/event/EventHandler.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/event/EventHandler.cpp",
+    "output": "src/event/CMakeFiles/event.dir/EventHandler.cpp.o"
+  },
+  {
+    "directory": "/home/abolfazl/CLionProjects/Vortex/cmake-build-debug",
+    "command": "/usr/bin/c++ -I/home/abolfazl/CLionProjects/Vortex/src/event -g -std=gnu++17 -fdiagnostics-color=always -o src/event/CMakeFiles/event.dir/IoUring.cpp.o -c /home/abolfazl/CLionProjects/Vortex/src/event/IoUring.cpp",
+    "file": "/home/abolfazl/CLionProjects/Vortex/src/event/IoUring.cpp",
+    "output": "src/event/CMakeFiles/event.dir/IoUring.cpp.o"
+  }
+]

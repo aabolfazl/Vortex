@@ -11,12 +11,14 @@
 
 #include "ConnectionAcceptor.h"
 
-namespace vortex::core {
+#include <iostream>
 
+namespace vortex::core {
 ConnectionAcceptor::ConnectionAcceptor(
-    const std::shared_ptr<event::EventLoop> &eventLoop,
-    uint16_t port
-) : socket(std::make_unique<Socket>()) {
+    const event::IoUringWorkerPtr& workerPtr,
+    const uint16_t port
+) : socket(std::make_unique<Socket>()),
+    ioUringSocket(new event::IoUringSocket(socket->getFd(), event::IoUringSocketType::Accept)) {
     std::cout << "ConnectionAcceptor on port: " << port << std::endl;
 
     socket->setReusePort(true);
@@ -24,45 +26,16 @@ ConnectionAcceptor::ConnectionAcceptor(
     socket->setNonBlocking();
     socket->listen();
 
-    auto event = new event::EventHandler(EVENT_ACCEPT, socket->getFd());
-    event->setEventCallback(std::bind(&ConnectionAcceptor::onEvent, this, std::placeholders::_1));
-
-    if (!eventLoop->add(event)) {
-        socket->close();
-        std::cerr << "Add ConnectionAcceptor failed errno: " + std::string(strerror(errno)) << std::endl;
-        _exit(EXIT_FAILURE);
-    }
+    workerPtr->submitAcceptSocket(*ioUringSocket);
 }
 
-void ConnectionAcceptor::setAcceptCallback(const AcceptCallback &callback) {
-    ConnectionAcceptor::acceptCallback = callback;
+void ConnectionAcceptor::setAcceptCallback(const event::AcceptCallback& callback) const {
+    ioUringSocket->setAcceptCallBack(callback);
 }
 
-auto ConnectionAcceptor::listen() -> void {
+auto ConnectionAcceptor::listen() const -> void {
     socket->listen();
 }
 
-auto ConnectionAcceptor::onRead() -> void {
-    auto clientFd = socket->accept();
-    if (acceptCallback) {
-        acceptCallback(clientFd);
-    } else {
-        close(clientFd);
-    }
-}
-
-bool ConnectionAcceptor::onEvent(const std::any &event) {
-    if (event.type() == typeid(int)) {
-        int num = std::any_cast<int>(event);
-        acceptCallback(num);
-        return true;
-    } else {
-        std::cerr << "Event does not contain an int" << std::endl;
-        return false;
-    }
-}
-
-ConnectionAcceptor::~ConnectionAcceptor() {
-
-}
+ConnectionAcceptor::~ConnectionAcceptor() {}
 }
