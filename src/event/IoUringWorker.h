@@ -10,20 +10,25 @@
  */
 #ifndef IOURINGWORKER_H
 #define IOURINGWORKER_H
-#include <liburing.h>
 
 #include "IoUring.h"
+#include <cstring>
+#include <iostream>
+#include <stdexcept>
+#include <netinet/in.h>
+#include <memory>
 
 namespace vortex::event {
 class IoUringWorker final {
 public:
     explicit IoUringWorker();
+    ~IoUringWorker();
+
     IoUringSocket& addServerSocket(os_fd_t fd);
     IoUringSocket& addClientSocket(os_fd_t fd);
-    IoUringSocket& addAcceptSocket(os_fd_t fd);
+    bool submitAcceptSocket(IoUringSocket& socket) const;
     Request* submitConnectRequest(IoUringSocket& socket,
                                   const uint8_t& address);
-    ~IoUringWorker();
     Request* submitReadRequest(IoUringSocket& socket);
     Request* submitWriteRequest(IoUringSocket& socket, const uint8_t& slices);
     Request* submitCloseRequest(IoUringSocket& socket);
@@ -35,12 +40,16 @@ public:
     void handle_completion(const io_uring_cqe* cqe);
 
 private:
-    io_uring ring{};
+    IoUringPtr ioUringPtr;
     std::vector<std::pair<std::string, int>> backend_servers{};
     std::unordered_map<int, int> client_to_backend_map{};
     int listener_fd{};
     char buffer[4096]{};
+
+    void submit() const;
 };
+
+using IoUringWorkerPtr = std::shared_ptr<IoUringWorker>;
 }
 
 

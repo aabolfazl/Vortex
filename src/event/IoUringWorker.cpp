@@ -11,57 +11,46 @@
 
 #include "IoUringWorker.h"
 
-#include <cstring>
-#include <iostream>
-#include <stdexcept>
-
 namespace vortex::event {
-IoUringWorker::IoUringWorker() {
-    if (io_uring_queue_init(256, &ring, 0) < 0) {
-        throw std::runtime_error("Failed to initialize io_uring");
+IoUringWorker::IoUringWorker() : ioUringPtr(std::make_unique<IoUring>(256)) {}
+
+IoUringSocket& IoUringWorker::addServerSocket(os_fd_t fd) {}
+
+IoUringSocket& IoUringWorker::addClientSocket(os_fd_t fd) {}
+
+bool IoUringWorker::submitAcceptSocket(IoUringSocket& socket) const {
+    const auto res = ioUringPtr->prepareAccept(socket);
+
+    if (res == IoUringResult::Error){
+        std::cerr << "Failed to prepare accept request\n";
+        return false;
     }
+
+    return true;
 }
 
-IoUringSocket& IoUringWorker::addServerSocket(os_fd_t fd) {
+Request* IoUringWorker::submitConnectRequest(IoUringSocket& socket, const uint8_t& address) {}
+
+IoUringWorker::~IoUringWorker() {}
+
+void IoUringWorker::loop() {
+    do{
+        ioUringPtr->run();
+    } while (true);
 }
 
-IoUringSocket& IoUringWorker::addClientSocket(os_fd_t fd) {
-}
-
-Request* IoUringWorker::submitConnectRequest(IoUringSocket& socket,
-    const uint8_t& address) {
-}
-
-IoUringWorker::~IoUringWorker() {
-    io_uring_queue_exit(&ring);
-}
-
-[[noreturn]] void IoUringWorker::loop() {
-    while (true) {
-        io_uring_submit_and_wait(&ring, 1);
-        io_uring_cqe* cqe;
-        unsigned head;
-        unsigned count = 0;
-
-        io_uring_for_each_cqe(&ring, head, cqe) {
-            handle_completion(cqe);
-            ++count;
-        }
-
-        io_uring_cq_advance(&ring, count);
-    }
+void IoUringWorker::submit() const {
+    ioUringPtr->submit();
 }
 
 void IoUringWorker::handle_completion(const io_uring_cqe* cqe) {
     int fd = static_cast<int>(reinterpret_cast<uintptr_t>(
         io_uring_cqe_get_data(cqe)));
 
-    if (cqe->res < 0) {
+    if (cqe->res < 0){
         std::cerr << "Error on fd " << fd << ": " << strerror(-cqe->res) <<
             std::endl;
         return;
     }
-
 }
-
 }
