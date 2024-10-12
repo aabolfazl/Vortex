@@ -13,6 +13,8 @@
 #include <chrono>
 #include <thread>
 
+#include "logger/logger.h"
+
 namespace vortex::core {
 tcp_server::tcp_server(
     const std::shared_ptr<config::ConfigLoader>& configLoader,
@@ -27,13 +29,13 @@ tcp_server::tcp_server(
 }
 
 auto tcp_server::on_new_connection(int fd) -> void {
-    std::cout << "onNewClientConnected " << fd << std::endl;
+    logger::info("onNewClientConnected {}", fd);
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     const std::string msg = "Hi man fd: " + std::to_string(fd) + "\n";
 
     write(fd, msg.data(), msg.size());
     close(fd);
-    std::cout << "onNewClientClosed " << fd << std::endl;
+    logger::info("onNewClientClosed {}", fd);
 }
 
 auto tcp_server::start() -> void {

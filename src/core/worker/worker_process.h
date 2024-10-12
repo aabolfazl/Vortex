@@ -19,7 +19,7 @@
 namespace vortex::core {
 class worker_process {
 public:
-    explicit worker_process(pid_t pid, const std::string &configPath);
+    explicit worker_process(pid_t pid, const std::string& configPath);
 
     ~worker_process();
 

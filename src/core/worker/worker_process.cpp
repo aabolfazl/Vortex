@@ -10,13 +10,12 @@
  */
 
 #include "worker_process.h"
-
-#include <iostream>
+#include "logger/logger.h"
 
 namespace vortex::core {
 worker_process::worker_process(
     const pid_t pid,
-    const std::string &configPath
+    const std::string& configPath
 ) : _config_loader(std::make_unique<config::ConfigLoader>(configPath)),
     _worker_ptr(std::make_shared<event::io_uring_worker>()) {
     _server = std::make_unique<tcp_server>(
@@ -24,7 +23,7 @@ worker_process::worker_process(
         _worker_ptr
     );
 
-    std::cout << "WorkerProcess started with " << pid << " id" << std::endl;
+    logger::info("WorkerProcess started with {} id", pid);
 }
 
 void worker_process::start() const {

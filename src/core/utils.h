@@ -7,22 +7,22 @@
 
 #include <fcntl.h>
 #include "iostream"
+#include "logger/logger.h"
 
 
 namespace vortex::core {
-
-bool makeNonBlocking(const int fd) {
-    std::cout << "makeNonBlocking " << fd << std::endl;
+inline bool make_non_blocking(const int fd) {
+    logger::info("makeNonBlocking {}", fd);
 
     int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
-        std::cerr << "fcntl F_GETFL failed" << std::endl;
+    if (flags == -1){
+        logger::error("fcntl F_GETFL failed");
         return false;
     }
 
     flags |= O_NONBLOCK;
-    if (fcntl(fd, F_SETFL, flags) == -1) {
-        std::cerr << "fcntl F_SETFL failed" << std::endl;
+    if (fcntl(fd, F_SETFL, flags) == -1){
+        logger::error("fcntl F_SETFL failed");
         return false;
     }
 

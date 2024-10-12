@@ -16,14 +16,13 @@
 #include <csignal>
 #include <iostream>
 #include "utils.h"
+#include "logger/logger.h"
 
 namespace vortex::core {
-
 socket::socket() {
-    std::cerr << "Socket()" << std::endl;
     _socket_fd = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (_socket_fd < 0) {
-        std::cerr << "Failed to create socket" << std::endl;
+    if (_socket_fd < 0){
+        logger::error("Failed to create socket");
         _exit(EXIT_FAILURE);
     }
 }
@@ -35,18 +34,18 @@ auto socket::bind(uint16_t port) const -> void {
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(port);
 
-    if (::bind(_socket_fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0) {
-        std::cerr << "Bind failed " + std::string(strerror(errno)) << std::endl;
+    if (::bind(_socket_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0){
+        logger::error("Bind failed {}", std::string(strerror(errno)));
         close();
         _exit(EXIT_FAILURE);
     }
-    std::cerr << "Bind success on port: " << port << std::endl;
+    logger::info("Bind success on port: ", port);
 }
 
 auto socket::listen() const -> void {
     assert(_socket_fd > 0);
-   const int ret = ::listen(_socket_fd, SOMAXCONN);
-    if (ret < 0) {
+    const int ret = ::listen(_socket_fd, SOMAXCONN);
+    if (ret < 0){
         _exit(EXIT_FAILURE);
     }
 }
@@ -56,15 +55,15 @@ auto socket::accept() const -> int {
 
     sockaddr_in clientAddr = {};
     socklen_t clientLen = sizeof(clientAddr);
-    const int peerFd = ::accept(_socket_fd, reinterpret_cast<sockaddr *>(&clientAddr), &clientLen);
-    if (peerFd < 0) {
-        std::cerr << "accept error" << std::endl;
+    const int peerFd = ::accept(_socket_fd, reinterpret_cast<sockaddr*>(&clientAddr), &clientLen);
+    if (peerFd < 0){
+        logger::error("accept error");
     }
 
     return peerFd;
 }
 
-auto socket::read(uint8_t *buffer, const uint64_t len) const -> size_t {
+auto socket::read(uint8_t* buffer, const uint64_t len) const -> size_t {
     return ::read(_socket_fd, buffer, len);
 }
 
@@ -79,7 +78,7 @@ auto socket::set_reuse_port(const bool val) const -> int {
 }
 
 auto socket::set_non_blocking() const -> int {
-    return makeNonBlocking(_socket_fd);
+    return make_non_blocking(_socket_fd);
 }
 
 auto socket::get_fd() const -> int {
@@ -87,7 +86,7 @@ auto socket::get_fd() const -> int {
 }
 
 auto socket::close() const -> void {
-    if (_socket_fd >= 0) {
+    if (_socket_fd >= 0){
         ::close(_socket_fd);
     }
 }
@@ -95,5 +94,4 @@ auto socket::close() const -> void {
 socket::~socket() {
     close();
 }
-
 }

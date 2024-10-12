@@ -28,12 +28,12 @@ public:
     io_uring_socket& add_client_socket(os_fd_t fd);
     bool submit_accept_socket(io_uring_socket& socket) const;
     io_request* submit_connect_request(io_uring_socket& socket,
-                                  const uint8_t& address);
+                                       const uint8_t& address);
     io_request* submit_read_request(io_uring_socket& socket);
     io_request* submit_write_request(io_uring_socket& socket, const uint8_t& slices);
     io_request* submit_close_request(io_uring_socket& socket);
     io_request* submit_cancel_request(io_uring_socket& socket,
-                                 io_request* request_to_cancel);
+                                      io_request* request_to_cancel);
     io_request* submit_shutdown_request(io_uring_socket& socket, int how);
     uint32_t get_num_of_sockets() const { return _backend_servers.size(); }
     void loop() const;

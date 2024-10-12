@@ -14,7 +14,7 @@
 
 namespace vortex {
 vortex_app::vortex_app(
-    const std::string &configFile
+    const std::string& configFile
 ) {
     setenv("config_file", configFile.data(), 1);
 }

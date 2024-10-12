@@ -27,9 +27,10 @@ add_library(core STATIC
         socket.h
         connection_acceptor.cpp
         connection_acceptor.h
+        logger/logger.h
 )
 
 target_include_directories(core PUBLIC ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ./../event/)
 
-target_link_libraries(core Boost::json)
+target_link_libraries(core Boost::json fmt)
 target_compile_features(core PUBLIC cxx_std_17)

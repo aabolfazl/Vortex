@@ -10,8 +10,7 @@
   */
 
 #include "connection_acceptor.h"
-
-#include <iostream>
+#include "logger/logger.h"
 
 namespace vortex::core {
 connection_acceptor::connection_acceptor(
@@ -19,7 +18,7 @@ connection_acceptor::connection_acceptor(
     const uint16_t port
 ) : _socket(std::make_unique<socket>()),
     _io_uring_socket(new event::io_uring_socket(_socket->get_fd(), event::IoUringSocketType::Accept)) {
-    std::cout << "ConnectionAcceptor on port: " << port << std::endl;
+    logger::info("connection_acceptor startet on port {}", port);
 
     _socket->set_reuse_port(true);
     _socket->bind(port);

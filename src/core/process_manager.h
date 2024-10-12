@@ -26,7 +26,7 @@ public:
     void create_workers();
 
 private:
-    std::vector<pid_t> workerProcesses = {};
+    std::vector<pid_t> _worker_processes = {};
 };
 }
 

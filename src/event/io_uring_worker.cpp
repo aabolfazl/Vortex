@@ -9,7 +9,7 @@
  *
  */
 
-#include "IoUringWorker.h"
+#include "io_uring_worker.h"
 
 namespace vortex::event {
 io_uring_worker::io_uring_worker() : _io_uring_ptr(std::make_unique<io_uring_core>(256)) {}
@@ -21,7 +21,7 @@ io_uring_socket& io_uring_worker::add_client_socket(os_fd_t fd) {}
 bool io_uring_worker::submit_accept_socket(io_uring_socket& socket) const {
     const auto res = _io_uring_ptr->prepare_accept(socket);
 
-    if (res == IoUringResult::Error){
+    if (res == io_uring_result::error){
         std::cerr << "Failed to prepare accept request\n";
         return false;
     }

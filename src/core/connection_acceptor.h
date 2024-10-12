@@ -17,7 +17,7 @@
 #include <functional>
 
 #include "io_uring_socket.h"
-#include "IoUringWorker.h"
+#include "io_uring_worker.h"
 
 namespace vortex::core {
 

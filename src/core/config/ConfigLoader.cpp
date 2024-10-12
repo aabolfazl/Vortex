@@ -31,7 +31,6 @@ void ConfigLoader::readFile() {
                 (std::istreambuf_iterator<char>())
             );
 
-            std::cout << "config: " << jsonContent << std::endl;
             config = boost::json::parse(jsonContent).as_object();
         } catch (const std::exception &e) {
             std::cerr << "Failed to parse config: " << e.what() << std::endl;

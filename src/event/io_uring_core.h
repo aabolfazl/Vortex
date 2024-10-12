@@ -25,7 +25,7 @@ class io_uring_socket;
 class io_uring_worker;
 class io_request;
 
-enum class IoUringResult { Ok, Error };
+enum class io_uring_result { success, error };
 
 struct FileReadyType {
     static constexpr uint32_t Read = 0x1;
@@ -42,21 +42,21 @@ public:
     explicit io_uring_core(uint32_t io_uring_size);
     ~io_uring_core();
 
-    IoUringResult prepare_accept(io_uring_socket& socket);
+    io_uring_result prepare_accept(io_uring_socket& socket);
 
     // IoUringResult prepareConnect(os_fd_t fd, const Network::Address::InstanceConstSharedPtr& address,
     // Request* user_data);
-    IoUringResult prepare_readv(os_fd_t fd, const iovec* iovecs,
+    io_uring_result prepare_readv(os_fd_t fd, const iovec* iovecs,
                                unsigned nr_vecs, off_t offset,
                                io_request* user_data);
-    IoUringResult prepare_writev(os_fd_t fd, const iovec* iovecs,
+    io_uring_result prepare_writev(os_fd_t fd, const iovec* iovecs,
                                 unsigned nr_vecs,
                                 off_t offset, io_request* user_data);
-    IoUringResult prepare_close(os_fd_t fd, io_request* user_data);
-    IoUringResult prepare_cancel(io_request* cancelling_user_data,
+    io_uring_result prepare_close(os_fd_t fd, io_request* user_data);
+    io_uring_result prepare_cancel(io_request* cancelling_user_data,
                                 io_request* user_data);
-    IoUringResult prepare_shutdown(os_fd_t fd, int how, io_request* user_data);
-    IoUringResult submit();
+    io_uring_result prepare_shutdown(os_fd_t fd, int how, io_request* user_data);
+    io_uring_result submit();
     void run();
 
 private:
@@ -106,8 +106,8 @@ using IoUringSocketPtr = std::unique_ptr<io_uring_socket>;
 
 class io_request final {
 public:
-    enum class RequestType : uint8_t {
-        Accept = 0x1,
+    enum class request_type : uint8_t {
+        accept = 0x1,
         Connect = 0x2,
         Read = 0x4,
         Write = 0x8,
@@ -116,13 +116,13 @@ public:
         Shutdown = 0x40,
     };
 
-    io_request(const RequestType type, io_uring_socket& socket) :
+    io_request(const request_type type, io_uring_socket& socket) :
         type_(type),
         socket_(socket) {}
 
     virtual ~io_request() = default;
 
-    RequestType type() const {
+    request_type type() const {
         return type_;
     }
 
@@ -131,7 +131,7 @@ public:
     }
 
 private:
-    RequestType type_;
+    request_type type_;
     io_uring_socket& socket_;
 };
 

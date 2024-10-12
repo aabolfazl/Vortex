@@ -16,6 +16,7 @@
 #include <stdexcept>
 
 #include "io_uring_socket.h"
+#include "../core/logger/logger.h"
 
 namespace vortex::event {
 bool is_io_uring_supported() {
@@ -41,21 +42,21 @@ io_uring_core::~io_uring_core() {
     io_uring_queue_exit(&ring);
 }
 
-IoUringResult io_uring_core::prepare_accept(io_uring_socket& socket) {
-    const auto request = new io_request(io_request::RequestType::Accept, socket);
+io_uring_result io_uring_core::prepare_accept(io_uring_socket& socket) {
+    const auto request = new io_request(io_request::request_type::accept, socket);
     const os_fd_t fd = socket.getFd();
 
     const auto sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_accept(sqe, fd, reinterpret_cast<sockaddr*>(&client_addr), &client_len, 0);
     io_uring_sqe_set_data(sqe, request);
     submit();
 
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
 // IoUringResult IoUring::prepareConnect(os_fd_t fd,
@@ -68,76 +69,76 @@ IoUringResult io_uring_core::prepare_accept(io_uring_socket& socket) {
 //     return IoUringResult::Ok;
 // }
 
-IoUringResult io_uring_core::prepare_readv(const os_fd_t fd, const iovec* iovecs,
-                                    const unsigned nr_vecs, const off_t offset,
-                                    io_request* user_data) {
+io_uring_result io_uring_core::prepare_readv(const os_fd_t fd, const iovec* iovecs,
+                                             const unsigned nr_vecs, const off_t offset,
+                                             io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_readv(sqe, fd, iovecs, nr_vecs, offset);
     io_uring_sqe_set_data(sqe, user_data);
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
-IoUringResult io_uring_core::prepare_writev(const os_fd_t fd, const iovec* iovecs,
-                                     const unsigned nr_vecs, const off_t offset,
-                                     io_request* user_data) {
+io_uring_result io_uring_core::prepare_writev(const os_fd_t fd, const iovec* iovecs,
+                                              const unsigned nr_vecs, const off_t offset,
+                                              io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_writev(sqe, fd, iovecs, nr_vecs, offset);
     io_uring_sqe_set_data(sqe, user_data);
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
-IoUringResult io_uring_core::prepare_close(const os_fd_t fd, io_request* user_data) {
+io_uring_result io_uring_core::prepare_close(const os_fd_t fd, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_close(sqe, fd);
     io_uring_sqe_set_data(sqe, user_data);
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
-IoUringResult io_uring_core::prepare_cancel(io_request* cancelling_user_data, io_request* user_data) {
+io_uring_result io_uring_core::prepare_cancel(io_request* cancelling_user_data, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_cancel(sqe, cancelling_user_data, 0);
     io_uring_sqe_set_data(sqe, user_data);
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
-IoUringResult io_uring_core::prepare_shutdown(const os_fd_t fd, const int how, io_request* user_data) {
+io_uring_result io_uring_core::prepare_shutdown(const os_fd_t fd, const int how, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
 
     io_uring_prep_shutdown(sqe, fd, how);
     io_uring_sqe_set_data(sqe, user_data);
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
-IoUringResult io_uring_core::submit() {
+io_uring_result io_uring_core::submit() {
     const int ret = io_uring_submit(&ring);
     if (ret < 0){
-        return IoUringResult::Error;
+        return io_uring_result::error;
     }
-    return IoUringResult::Ok;
+    return io_uring_result::success;
 }
 
 void io_uring_core::run() {
@@ -155,21 +156,20 @@ void io_uring_core::run() {
             auto* request = static_cast<io_request*>(io_uring_cqe_get_data(cqe));
             if (request){
                 switch (request->type()){
-                case io_request::RequestType::Accept:
+                case io_request::request_type::accept:
                     request->socket().onAccept(request, cqe->res);
                     prepare_accept(request->socket());
                     break;
                 default:
-                    std::cerr << "Unknown request type\n";
+                    core::logger::error("Unknown request type");
                     break;
                 }
             }
             io_uring_cqe_seen(&ring, cqe);
         } else if (ret == -ETIME){
-            std::cerr << "ETIME" << "\n";
-            continue;
+            core::logger::info("timeout called");
         } else{
-            std::cerr << "Error in io_uring_wait_cqe_timeout: " << strerror(-ret) << "\n";
+            core::logger::error("Error in io_uring_wait_cqe_timeout: {}", strerror(-ret));
         }
     }
 }
