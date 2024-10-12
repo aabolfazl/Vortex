@@ -11,7 +11,7 @@
 #ifndef IOURINGWORKER_H
 #define IOURINGWORKER_H
 
-#include "IoUring.h"
+#include "io_uring_core.h"
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
@@ -19,37 +19,35 @@
 #include <memory>
 
 namespace vortex::event {
-class IoUringWorker final {
+class io_uring_worker final {
 public:
-    explicit IoUringWorker();
-    ~IoUringWorker();
+    explicit io_uring_worker();
+    ~io_uring_worker();
 
-    IoUringSocket& addServerSocket(os_fd_t fd);
-    IoUringSocket& addClientSocket(os_fd_t fd);
-    bool submitAcceptSocket(IoUringSocket& socket) const;
-    Request* submitConnectRequest(IoUringSocket& socket,
+    io_uring_socket& add_server_socket(os_fd_t fd);
+    io_uring_socket& add_client_socket(os_fd_t fd);
+    bool submit_accept_socket(io_uring_socket& socket) const;
+    io_request* submit_connect_request(io_uring_socket& socket,
                                   const uint8_t& address);
-    Request* submitReadRequest(IoUringSocket& socket);
-    Request* submitWriteRequest(IoUringSocket& socket, const uint8_t& slices);
-    Request* submitCloseRequest(IoUringSocket& socket);
-    Request* submitCancelRequest(IoUringSocket& socket,
-                                 Request* request_to_cancel);
-    Request* submitShutdownRequest(IoUringSocket& socket, int how);
-    uint32_t getNumOfSockets() const { return backend_servers.size(); }
-    void loop();
+    io_request* submit_read_request(io_uring_socket& socket);
+    io_request* submit_write_request(io_uring_socket& socket, const uint8_t& slices);
+    io_request* submit_close_request(io_uring_socket& socket);
+    io_request* submit_cancel_request(io_uring_socket& socket,
+                                 io_request* request_to_cancel);
+    io_request* submit_shutdown_request(io_uring_socket& socket, int how);
+    uint32_t get_num_of_sockets() const { return _backend_servers.size(); }
+    void loop() const;
     void handle_completion(const io_uring_cqe* cqe);
 
 private:
-    IoUringPtr ioUringPtr;
-    std::vector<std::pair<std::string, int>> backend_servers{};
-    std::unordered_map<int, int> client_to_backend_map{};
-    int listener_fd{};
-    char buffer[4096]{};
+    io_uring_core_ptr _io_uring_ptr;
+    std::vector<std::pair<std::string, int>> _backend_servers{};
+    std::unordered_map<int, int> _client_to_backend_map{};
 
     void submit() const;
 };
 
-using IoUringWorkerPtr = std::shared_ptr<IoUringWorker>;
+using io_uring_worker_ptr = std::shared_ptr<io_uring_worker>;
 }
 
 

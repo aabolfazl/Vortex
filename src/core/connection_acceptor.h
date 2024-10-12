@@ -12,39 +12,39 @@
 #ifndef VORTEX_CONNECTION_ACCEPTOR_H
 #define VORTEX_CONNECTION_ACCEPTOR_H
 
-#include "Socket.h"
+#include "socket.h"
 #include <memory>
 #include <functional>
 
-#include "IoUringSocket.h"
+#include "io_uring_socket.h"
 #include "IoUringWorker.h"
 
 namespace vortex::core {
 
-class ConnectionAcceptor final {
+class connection_acceptor final {
 public:
-    explicit ConnectionAcceptor(
-        const event::IoUringWorkerPtr& workerPtr,
+    explicit connection_acceptor(
+        const event::io_uring_worker_ptr& workerPtr,
         uint16_t port
     );
 
-    ~ConnectionAcceptor();
+    ~connection_acceptor();
 
-    ConnectionAcceptor(ConnectionAcceptor&&) noexcept(true) = default;
+    connection_acceptor(connection_acceptor&&) noexcept(true) = default;
 
-    ConnectionAcceptor& operator=(ConnectionAcceptor&&) noexcept(true) = default;
+    connection_acceptor& operator=(connection_acceptor&&) noexcept(true) = default;
 
     auto setAcceptCallback(const event::AcceptCallback& callback) const -> void;
 
     auto listen() const -> void;
 
     auto fd() const -> int {
-        return socket->getFd();
+        return _socket->get_fd();
     }
 
 private:
-    std::unique_ptr<Socket> socket;
-    event::IoUringSocket* ioUringSocket;
+    std::unique_ptr<socket> _socket;
+    event::io_uring_socket* _io_uring_socket;
 
     auto onRead() const -> void;
 };

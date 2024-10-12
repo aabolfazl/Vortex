@@ -16,15 +16,15 @@
 #include <netinet/in.h>
 
 namespace vortex::core {
-class Socket {
+class socket {
 public:
-    explicit Socket();
+    explicit socket();
 
-    ~Socket();
+    ~socket();
 
-    Socket(Socket &&) noexcept(true) = default;
+    socket(socket &&) noexcept(true) = default;
 
-    Socket &operator=(Socket &&) noexcept(true) = default;
+    socket &operator=(socket &&) noexcept(true) = default;
 
     auto bind(uint16_t port) const -> void;
 
@@ -36,16 +36,16 @@ public:
 
     auto read(uint8_t *buffer, uint64_t len) const -> size_t;
 
-    auto setReuseAddress(bool val) const -> int;
+    auto set_reuse_address(bool val) const -> int;
 
-    auto setReusePort(bool val) const -> int;
+    auto set_reuse_port(bool val) const -> int;
 
-    auto setNonBlocking() const -> int;
+    auto set_non_blocking() const -> int;
 
-    auto getFd() const -> int;
+    auto get_fd() const -> int;
 
 private:
-    int socketFd;
+    int _socket_fd;
 };
 
 }

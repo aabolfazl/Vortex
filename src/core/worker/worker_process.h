@@ -14,21 +14,21 @@
 
 #include <memory>
 #include <sched.h>
-#include "TcpServer.h"
+#include "tcp_server.h"
 
 namespace vortex::core {
-class WorkerProcess {
+class worker_process {
 public:
-    explicit WorkerProcess(pid_t pid, const std::string &configPath);
+    explicit worker_process(pid_t pid, const std::string &configPath);
 
-    ~WorkerProcess();
+    ~worker_process();
 
     void start() const;
 
 private:
-    std::unique_ptr<TcpServer> server;
-    std::shared_ptr<config::ConfigLoader> configLoader;
-    event::IoUringWorkerPtr eventLoop;
+    std::unique_ptr<tcp_server> _server;
+    std::shared_ptr<config::ConfigLoader> _config_loader;
+    event::io_uring_worker_ptr _worker_ptr;
 };
 } // end vortex::core
 

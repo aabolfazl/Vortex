@@ -9,18 +9,18 @@
  *
  */
 
-#include "VortexApp.h"
+#include "vortex_app.h"
 #include <thread>
 
 namespace vortex {
-VortexApp::VortexApp(
+vortex_app::vortex_app(
     const std::string &configFile
 ) {
     setenv("config_file", configFile.data(), 1);
 }
 
-void VortexApp::start() {
-    processManager = std::make_unique<core::ProcessManager>();
-    processManager->createWorkers();
+void vortex_app::start() {
+    processManager = std::make_unique<core::process_manager>();
+    processManager->create_workers();
 }
 } // vortex

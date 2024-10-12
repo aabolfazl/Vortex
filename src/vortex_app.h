@@ -13,17 +13,17 @@
 #define VORTEXAPP_H
 #include <memory>
 
-#include "ProcessManager.h"
+#include "process_manager.h"
 #include <config/ConfigLoader.h>
 
 namespace vortex {
-class VortexApp {
+class vortex_app {
 public:
-    explicit VortexApp(const std::string &configFile);
+    explicit vortex_app(const std::string &configFile);
     void start();
 
 private:
-    std::unique_ptr<core::ProcessManager> processManager = nullptr;
+    std::unique_ptr<core::process_manager> processManager = nullptr;
 };
 } // vortex
 

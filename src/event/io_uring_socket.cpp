@@ -9,22 +9,22 @@
  *
  */
 
-#include "IoUringSocket.h"
+#include "io_uring_socket.h"
 
 namespace vortex::event {
-IoUringSocket::IoUringSocket(const os_fd_t fd, const IoUringSocketType type) : fd(fd), type(type) {}
+io_uring_socket::io_uring_socket(const os_fd_t fd, const IoUringSocketType type) : fd(fd), type(type) {}
 
-os_fd_t IoUringSocket::getFd() const {
+os_fd_t io_uring_socket::getFd() const {
     return fd;
 }
 
-void IoUringSocket::onAccept(Request* req, const int32_t result) const {
+void io_uring_socket::onAccept(io_request* req, const int32_t result) const {
     if (type == IoUringSocketType::Accept && acceptCallback){
         acceptCallback(result);
     }
 }
 
-void IoUringSocket::setAcceptCallBack(const AcceptCallback& callback) {
+void io_uring_socket::setAcceptCallBack(const AcceptCallback& callback) {
     acceptCallback = callback;
 }
 }

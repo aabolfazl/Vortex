@@ -17,13 +17,13 @@
 #include <sys/types.h>
 
 namespace vortex::core {
-class ProcessManager {
+class process_manager {
 public:
-    ProcessManager() = default;
+    process_manager() = default;
 
-    static u_int getCoresSize();
+    static u_int get_cores_size();
 
-    void createWorkers();
+    void create_workers();
 
 private:
     std::vector<pid_t> workerProcesses = {};

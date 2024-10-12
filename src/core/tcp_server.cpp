@@ -9,24 +9,24 @@
   *
   */
 
-#include "TcpServer.h"
+#include "tcp_server.h"
 #include <chrono>
 #include <thread>
 
 namespace vortex::core {
-TcpServer::TcpServer(
+tcp_server::tcp_server(
     const std::shared_ptr<config::ConfigLoader>& configLoader,
-    const event::IoUringWorkerPtr& ioUringWorker
+    const event::io_uring_worker_ptr& ioUringWorker
 ) : ioUringWorker(ioUringWorker), config(configLoader->load()) {
     const auto port = config->listener.port;
 
-    acceptor = std::make_unique<ConnectionAcceptor>(ioUringWorker, port);
+    acceptor = std::make_unique<connection_acceptor>(ioUringWorker, port);
     acceptor->setAcceptCallback([this](const int fd) {
-        onNewConnection(fd);
+        on_new_connection(fd);
     });
 }
 
-auto TcpServer::onNewConnection(int fd) -> void {
+auto tcp_server::on_new_connection(int fd) -> void {
     std::cout << "onNewClientConnected " << fd << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
     const std::string msg = "Hi man fd: " + std::to_string(fd) + "\n";
@@ -36,9 +36,9 @@ auto TcpServer::onNewConnection(int fd) -> void {
     std::cout << "onNewClientClosed " << fd << std::endl;
 }
 
-auto TcpServer::start() -> void {
+auto tcp_server::start() -> void {
     ioUringWorker->loop();
 }
 
-auto TcpServer::stop() -> void {}
+auto tcp_server::stop() -> void {}
 }

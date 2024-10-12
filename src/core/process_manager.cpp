@@ -9,7 +9,7 @@
  *
  */
 
-#include "ProcessManager.h"
+#include "process_manager.h"
 
 #include <iostream>
 #include <thread>
@@ -22,15 +22,15 @@
 #include <cerrno>
 #include <cstring>
 #include <sys/wait.h>
-#include "worker/WorkerProcess.h"
+#include "worker/worker_process.h"
 
 namespace vortex::core {
-u_int ProcessManager::getCoresSize() {
+u_int process_manager::get_cores_size() {
     return std::thread::hardware_concurrency();
 }
 
-void ProcessManager::createWorkers() {
-    const unsigned int numWorkers = getCoresSize();
+void process_manager::create_workers() {
+    const unsigned int numWorkers = get_cores_size();
 
     for (unsigned int i = 0; i < numWorkers; ++i) {
         const pid_t pid = fork();
@@ -56,7 +56,7 @@ void ProcessManager::createWorkers() {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }
 
-            const auto worker = WorkerProcess(childPid, configPath);
+            const auto worker = worker_process(childPid, configPath);
             worker.start();
         }
     }

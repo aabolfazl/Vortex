@@ -4,16 +4,16 @@
 
 #ifndef IOURINGSOCKET_H
 #define IOURINGSOCKET_H
-#include "IoUring.h"
+#include "io_uring_core.h"
 
 namespace vortex::event {
 using AcceptCallback = std::function<void(int fd)>;
 
 
-class IoUringSocket final {
+class io_uring_socket final {
 public:
-    explicit IoUringSocket(os_fd_t fd, IoUringSocketType type);
-    ~IoUringSocket() = default;
+    explicit io_uring_socket(os_fd_t fd, IoUringSocketType type);
+    ~io_uring_socket() = default;
 
     os_fd_t getFd() const;
 
@@ -25,13 +25,13 @@ public:
     void write(uint8_t& data);
     uint64_t write(const uint8_t* slices, uint64_t num_slice);
     void shutdown(int how);
-    void onAccept(Request* req, int32_t result) const;
-    void onConnect(Request* req, int32_t result);
-    void onRead(Request* req, int32_t result);
-    void onWrite(Request* req, int32_t result);
-    void onClose(Request* req, int32_t result);
-    void onCancel(Request* req, int32_t result);
-    void onShutdown(Request* req, int32_t result);
+    void onAccept(io_request* req, int32_t result) const;
+    void onConnect(io_request* req, int32_t result);
+    void onRead(io_request* req, int32_t result);
+    void onWrite(io_request* req, int32_t result);
+    void onClose(io_request* req, int32_t result);
+    void onCancel(io_request* req, int32_t result);
+    void onShutdown(io_request* req, int32_t result);
     void setAcceptCallBack(const AcceptCallback& callback);
 
     IoUringSocketStatus getStatus() const;

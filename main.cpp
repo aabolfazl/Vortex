@@ -9,7 +9,7 @@
  *
  */
 
-#include "src/VortexApp.h"
+#include "src/vortex_app.h"
 #include <iostream>
 #include <fstream>
 
@@ -26,7 +26,7 @@ int main(const int argc, char* argv[]) {
         return 1;
     }
 
-    auto server = vortex::VortexApp(configFilePath);
+    auto server = vortex::vortex_app(configFilePath);
     server.start();
 
     return 0;

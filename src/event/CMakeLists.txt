@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(event STATIC
-        IoUring.cpp
-        IoUring.h
+        io_uring_core.cpp
+        io_uring_core.h
         IoUringWorker.cpp
         IoUringWorker.h
-        IoUringSocket.cpp
-        IoUringSocket.h
+        io_uring_socket.cpp
+        io_uring_socket.h
 )
 
 include_directories(/usr/include)

@@ -21,9 +21,9 @@
 #include "liburing.h"
 
 namespace vortex::event {
-class IoUringSocket;
-class IoUringWorker;
-class Request;
+class io_uring_socket;
+class io_uring_worker;
+class io_request;
 
 enum class IoUringResult { Ok, Error };
 
@@ -35,41 +35,39 @@ struct FileReadyType {
 
 typedef int os_fd_t;
 
-bool isIoUringSupported();
+bool is_io_uring_supported();
 
-class IoUring {
+class io_uring_core {
 public:
-    explicit IoUring(uint32_t io_uring_size);
-    ~IoUring();
+    explicit io_uring_core(uint32_t io_uring_size);
+    ~io_uring_core();
 
-    IoUringResult prepareAccept(IoUringSocket& socket);
+    IoUringResult prepare_accept(io_uring_socket& socket);
 
     // IoUringResult prepareConnect(os_fd_t fd, const Network::Address::InstanceConstSharedPtr& address,
     // Request* user_data);
-    IoUringResult prepareReadv(os_fd_t fd, const iovec* iovecs,
+    IoUringResult prepare_readv(os_fd_t fd, const iovec* iovecs,
                                unsigned nr_vecs, off_t offset,
-                               Request* user_data);
-    IoUringResult prepareWritev(os_fd_t fd, const iovec* iovecs,
+                               io_request* user_data);
+    IoUringResult prepare_writev(os_fd_t fd, const iovec* iovecs,
                                 unsigned nr_vecs,
-                                off_t offset, Request* user_data);
-    IoUringResult prepareClose(os_fd_t fd, Request* user_data);
-    IoUringResult prepareCancel(Request* cancelling_user_data,
-                                Request* user_data);
-    IoUringResult prepareShutdown(os_fd_t fd, int how, Request* user_data);
+                                off_t offset, io_request* user_data);
+    IoUringResult prepare_close(os_fd_t fd, io_request* user_data);
+    IoUringResult prepare_cancel(io_request* cancelling_user_data,
+                                io_request* user_data);
+    IoUringResult prepare_shutdown(os_fd_t fd, int how, io_request* user_data);
     IoUringResult submit();
-    void injectCompletion(os_fd_t fd, Request* user_data, int32_t result);
-    void removeInjectedCompletion(os_fd_t fd);
     void run();
 
 private:
-    io_uring ring{};
+    ::io_uring ring{};
     std::vector<io_uring_cqe*> cqes;
 
     sockaddr_in client_addr{};
     socklen_t client_len{};
 };
 
-using IoUringPtr = std::unique_ptr<IoUring>;
+using io_uring_core_ptr = std::unique_ptr<io_uring_core>;
 
 enum IoUringSocketStatus {
     Initialized,
@@ -104,9 +102,9 @@ enum class IoUringSocketType {
     Client,
 };
 
-using IoUringSocketPtr = std::unique_ptr<IoUringSocket>;
+using IoUringSocketPtr = std::unique_ptr<io_uring_socket>;
 
-class Request final {
+class io_request final {
 public:
     enum class RequestType : uint8_t {
         Accept = 0x1,
@@ -118,23 +116,23 @@ public:
         Shutdown = 0x40,
     };
 
-    Request(const RequestType type, IoUringSocket& socket) :
+    io_request(const RequestType type, io_uring_socket& socket) :
         type_(type),
         socket_(socket) {}
 
-    virtual ~Request() = default;
+    virtual ~io_request() = default;
 
     RequestType type() const {
         return type_;
     }
 
-    IoUringSocket& socket() const {
+    io_uring_socket& socket() const {
         return socket_;
     }
 
 private:
     RequestType type_;
-    IoUringSocket& socket_;
+    io_uring_socket& socket_;
 };
 
 using FileReadyCb = std::function<uint32_t>;

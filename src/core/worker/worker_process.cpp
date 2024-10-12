@@ -9,28 +9,28 @@
  *
  */
 
-#include "WorkerProcess.h"
+#include "worker_process.h"
 
 #include <iostream>
 
 namespace vortex::core {
-WorkerProcess::WorkerProcess(
+worker_process::worker_process(
     const pid_t pid,
     const std::string &configPath
-) : configLoader(std::make_unique<config::ConfigLoader>(configPath)),
-    eventLoop(std::make_shared<event::IoUringWorker>()) {
-    server = std::make_unique<TcpServer>(
-        configLoader,
-        eventLoop
+) : _config_loader(std::make_unique<config::ConfigLoader>(configPath)),
+    _worker_ptr(std::make_shared<event::io_uring_worker>()) {
+    _server = std::make_unique<tcp_server>(
+        _config_loader,
+        _worker_ptr
     );
 
     std::cout << "WorkerProcess started with " << pid << " id" << std::endl;
 }
 
-void WorkerProcess::start() const {
-    server->start();
+void worker_process::start() const {
+    _server->start();
     _exit(0);
 }
 
-WorkerProcess::~WorkerProcess() = default;
+worker_process::~worker_process() = default;
 }

@@ -9,17 +9,17 @@
   *
   */
 
-#include "IoUring.h"
+#include "io_uring_core.h"
 
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
 
-#include "IoUringSocket.h"
+#include "io_uring_socket.h"
 
 namespace vortex::event {
-bool isIoUringSupported() {
-    io_uring ring;
+bool is_io_uring_supported() {
+    io_uring ring{};
     if (io_uring_queue_init(1, &ring, 0) == 0){
         io_uring_queue_exit(&ring);
         return true;
@@ -27,7 +27,7 @@ bool isIoUringSupported() {
     return false;
 }
 
-IoUring::IoUring(const uint32_t io_uring_size) {
+io_uring_core::io_uring_core(const uint32_t io_uring_size) {
     // int flags = 0;
     // if (use_submission_queue_polling) {
     //     flags |= IORING_SETUP_SQPOLL;
@@ -37,12 +37,12 @@ IoUring::IoUring(const uint32_t io_uring_size) {
     }
 }
 
-IoUring::~IoUring() {
+io_uring_core::~io_uring_core() {
     io_uring_queue_exit(&ring);
 }
 
-IoUringResult IoUring::prepareAccept(IoUringSocket& socket) {
-    const auto request = new Request(Request::RequestType::Accept, socket);
+IoUringResult io_uring_core::prepare_accept(io_uring_socket& socket) {
+    const auto request = new io_request(io_request::RequestType::Accept, socket);
     const os_fd_t fd = socket.getFd();
 
     const auto sqe = io_uring_get_sqe(&ring);
@@ -68,9 +68,9 @@ IoUringResult IoUring::prepareAccept(IoUringSocket& socket) {
 //     return IoUringResult::Ok;
 // }
 
-IoUringResult IoUring::prepareReadv(const os_fd_t fd, const iovec* iovecs,
+IoUringResult io_uring_core::prepare_readv(const os_fd_t fd, const iovec* iovecs,
                                     const unsigned nr_vecs, const off_t offset,
-                                    Request* user_data) {
+                                    io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
@@ -82,9 +82,9 @@ IoUringResult IoUring::prepareReadv(const os_fd_t fd, const iovec* iovecs,
     return IoUringResult::Ok;
 }
 
-IoUringResult IoUring::prepareWritev(const os_fd_t fd, const iovec* iovecs,
+IoUringResult io_uring_core::prepare_writev(const os_fd_t fd, const iovec* iovecs,
                                      const unsigned nr_vecs, const off_t offset,
-                                     Request* user_data) {
+                                     io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
@@ -96,7 +96,7 @@ IoUringResult IoUring::prepareWritev(const os_fd_t fd, const iovec* iovecs,
     return IoUringResult::Ok;
 }
 
-IoUringResult IoUring::prepareClose(const os_fd_t fd, Request* user_data) {
+IoUringResult io_uring_core::prepare_close(const os_fd_t fd, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
@@ -108,7 +108,7 @@ IoUringResult IoUring::prepareClose(const os_fd_t fd, Request* user_data) {
     return IoUringResult::Ok;
 }
 
-IoUringResult IoUring::prepareCancel(Request* cancelling_user_data, Request* user_data) {
+IoUringResult io_uring_core::prepare_cancel(io_request* cancelling_user_data, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
@@ -120,7 +120,7 @@ IoUringResult IoUring::prepareCancel(Request* cancelling_user_data, Request* use
     return IoUringResult::Ok;
 }
 
-IoUringResult IoUring::prepareShutdown(const os_fd_t fd, const int how, Request* user_data) {
+IoUringResult io_uring_core::prepare_shutdown(const os_fd_t fd, const int how, io_request* user_data) {
     io_uring_sqe* sqe = io_uring_get_sqe(&ring);
 
     if (sqe == nullptr){
@@ -132,7 +132,7 @@ IoUringResult IoUring::prepareShutdown(const os_fd_t fd, const int how, Request*
     return IoUringResult::Ok;
 }
 
-IoUringResult IoUring::submit() {
+IoUringResult io_uring_core::submit() {
     const int ret = io_uring_submit(&ring);
     if (ret < 0){
         return IoUringResult::Error;
@@ -140,7 +140,7 @@ IoUringResult IoUring::submit() {
     return IoUringResult::Ok;
 }
 
-void IoUring::run() {
+void io_uring_core::run() {
     io_uring_cqe* cqe;
 
     while (true){
@@ -152,12 +152,12 @@ void IoUring::run() {
         const int ret = io_uring_wait_cqe_timeout(&ring, &cqe, &ts);
 
         if (ret == 0){
-            auto* request = static_cast<Request*>(io_uring_cqe_get_data(cqe));
+            auto* request = static_cast<io_request*>(io_uring_cqe_get_data(cqe));
             if (request){
                 switch (request->type()){
-                case Request::RequestType::Accept:
+                case io_request::RequestType::Accept:
                     request->socket().onAccept(request, cqe->res);
-                    prepareAccept(request->socket());
+                    prepare_accept(request->socket());
                     break;
                 default:
                     std::cerr << "Unknown request type\n";

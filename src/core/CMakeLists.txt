@@ -11,22 +11,22 @@ if (NOT Boost_FOUND)
 endif ()
 
 add_library(core STATIC
-        ProcessManager.cpp
-        ProcessManager.h
-        worker/WorkerProcess.cpp
-        worker/WorkerProcess.h
+        process_manager.cpp
+        process_manager.h
+        worker/worker_process.cpp
+        worker/worker_process.h
         config/ConfigLoader.cpp
         config/ConfigLoader.h
         config/Config.cpp
         config/Config.h
         ../Vortex.h
         utils.h
-        TcpServer.cpp
-        TcpServer.h
-        Socket.cpp
-        Socket.h
-        ConnectionAcceptor.cpp
-        ConnectionAcceptor.h
+        tcp_server.cpp
+        tcp_server.h
+        socket.cpp
+        socket.h
+        connection_acceptor.cpp
+        connection_acceptor.h
 )
 
 target_include_directories(core PUBLIC ${Boost_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ./../event/)
