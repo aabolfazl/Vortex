@@ -24,7 +24,7 @@ namespace vortex::core {
 class connection_acceptor final {
 public:
     explicit connection_acceptor(
-        const event::io_uring_worker_ptr& workerPtr,
+        const event::io_uring_worker_ptr& worker_ptr,
         uint16_t port
     );
 
@@ -44,10 +44,13 @@ public:
 
 private:
     std::unique_ptr<socket> _socket;
-    event::io_uring_socket* _io_uring_socket;
+    std::unique_ptr<event::io_uring_socket> _io_uring_socket;
 
     auto onRead() const -> void;
 };
+
+using connection_acceptor_ptr = std::unique_ptr<connection_acceptor>;
+
 }
 
 

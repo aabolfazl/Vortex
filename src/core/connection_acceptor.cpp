@@ -11,13 +11,14 @@
 
 #include "connection_acceptor.h"
 #include "logger/logger.h"
+#include <memory>
 
 namespace vortex::core {
 connection_acceptor::connection_acceptor(
     const event::io_uring_worker_ptr& workerPtr,
     const uint16_t port
 ) : _socket(std::make_unique<socket>()),
-    _io_uring_socket(new event::io_uring_socket(_socket->get_fd(), event::IoUringSocketType::Accept)) {
+    _io_uring_socket(std::make_unique<event::io_uring_socket>(_socket->get_fd(), event::IoUringSocketType::Accept)) {
     logger::info("connection_acceptor startet on port {}", port);
 
     _socket->set_reuse_port(true);

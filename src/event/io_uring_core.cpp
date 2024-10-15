@@ -138,6 +138,9 @@ io_uring_result io_uring_core::submit() {
     if (ret < 0){
         return io_uring_result::error;
     }
+
+    core::logger::info("io_uring_submit success with submit count of {}", ret);
+
     return io_uring_result::success;
 }
 
@@ -166,6 +169,7 @@ void io_uring_core::run() {
                 }
             }
             io_uring_cqe_seen(&ring, cqe);
+            delete request;
         } else if (ret == -ETIME){
             core::logger::info("timeout called");
         } else{

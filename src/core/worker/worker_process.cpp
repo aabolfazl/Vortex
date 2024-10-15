@@ -10,18 +10,17 @@
  */
 
 #include "worker_process.h"
+#include "config/Config.h"
 #include "logger/logger.h"
+#include <memory>
 
 namespace vortex::core {
 worker_process::worker_process(
     const pid_t pid,
     const std::string& configPath
-) : _config_loader(std::make_unique<config::ConfigLoader>(configPath)),
-    _worker_ptr(std::make_shared<event::io_uring_worker>()) {
-    _server = std::make_unique<tcp_server>(
-        _config_loader,
-        _worker_ptr
-    );
+) : _config_loader(std::make_unique<config::ConfigLoader>(configPath)) {
+    
+    _server = std::make_unique<tcp_server>(_config_loader->load());
 
     logger::info("WorkerProcess started with {} id", pid);
 }

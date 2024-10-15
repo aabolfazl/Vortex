@@ -74,5 +74,7 @@ public:
 
     static auto fromJson(boost::json::object &object) -> std::shared_ptr<Config>;
 };
+
+using config_ptr = std::shared_ptr<config::Config>;
 }
 #endif //CONFIG_H

@@ -28,7 +28,6 @@ public:
 private:
     std::unique_ptr<tcp_server> _server;
     std::shared_ptr<config::ConfigLoader> _config_loader;
-    event::io_uring_worker_ptr _worker_ptr;
 };
 } // end vortex::core
 

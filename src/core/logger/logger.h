@@ -33,7 +33,6 @@ public:
     }
 
 private:
-
     template <typename... Args>
     static void log(const log_level level, const char* format, Args&&... args) {
         const auto now = std::chrono::system_clock::now();

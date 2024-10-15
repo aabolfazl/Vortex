@@ -27,6 +27,8 @@ add_library(core STATIC
         socket.h
         connection_acceptor.cpp
         connection_acceptor.h
+        connection_manager.cpp
+        connection_manager.h
         logger/logger.h
 )
 

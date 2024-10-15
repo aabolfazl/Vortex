@@ -14,16 +14,15 @@
 
 
 #include "../Vortex.h"
+#include "config/Config.h"
 #include "connection_acceptor.h"
 #include "config/ConfigLoader.h"
+#include "connection_manager.h"
 
 namespace vortex::core {
 class tcp_server : public SharedClass<tcp_server> {
 public:
-    explicit tcp_server(
-        const std::shared_ptr<config::ConfigLoader>& configLoader,
-        const event::io_uring_worker_ptr& ioUringWorker
-);
+    explicit tcp_server(config::config_ptr config_ptr);
 
     auto start() -> void;
 
@@ -32,9 +31,9 @@ public:
 private:
     auto on_new_connection(int fd) -> void;
 
-    std::unique_ptr<connection_acceptor> acceptor;
-    event::io_uring_worker_ptr ioUringWorker;
     std::shared_ptr<config::Config> config;
+    connection_manager_ptr _connection_manager_ptr;
+
 };
 }
 
