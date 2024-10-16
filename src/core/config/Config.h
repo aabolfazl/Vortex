@@ -19,6 +19,7 @@
 #include <boost/json.hpp>
 
 namespace vortex::core::config {
+
 struct HealthCheck {
     int64_t interval = 0;
     int64_t timeout = 0;
@@ -58,8 +59,8 @@ struct Timeouts {
 };
 
 struct Buffers {
-    int64_t readBufferSize = 0;
-    int64_t writeBufferSize = 0;
+    int64_t read_buffer_size = 0;
+    int64_t write_buffer_size = 0;
 };
 
 class Config {
@@ -72,9 +73,13 @@ public:
     ResourceLimits resource_limits;
     Buffers buffers;
 
-    static auto fromJson(boost::json::object &object) -> std::shared_ptr<Config>;
+    static std::unique_ptr<Config> from_json(const boost::json::object& object);
 };
 
 using config_ptr = std::shared_ptr<config::Config>;
+
+extern config_ptr _config;
+
+config_ptr config();
 }
 #endif //CONFIG_H

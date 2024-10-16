@@ -10,26 +10,24 @@
  */
 
 #include "ConfigLoader.h"
+#include "config/Config.h"
+#include "logger/logger.h"
 
+#include <boost/json/parse.hpp>
+#include <cmath>
 #include <fstream>
 #include <iostream>
-#include <boost/json/parse.hpp>
 #include <utility>
 
 namespace vortex::core::config {
-ConfigLoader::ConfigLoader(
-    std::string configFile
-) : filePath(std::move(configFile)) {
+ConfigLoader::ConfigLoader(std::string configFile) : filePath(std::move(configFile)) {
     load();
 }
 
 void ConfigLoader::readFile() {
     if (std::ifstream ifs(filePath); ifs) {
         try {
-            const std::string jsonContent(
-                (std::istreambuf_iterator(ifs)),
-                (std::istreambuf_iterator<char>())
-            );
+            const std::string jsonContent((std::istreambuf_iterator(ifs)), (std::istreambuf_iterator<char>()));
 
             config = boost::json::parse(jsonContent).as_object();
         } catch (const std::exception &e) {
@@ -42,11 +40,11 @@ void ConfigLoader::readFile() {
     }
 }
 
-auto ConfigLoader::load() -> std::shared_ptr<Config> {
+void ConfigLoader::load() {
     if (config.empty()) {
         readFile();
     }
 
-    return Config::fromJson(config);
+    _config = Config::from_json(config);
 }
-}
+} // namespace vortex::core::config
