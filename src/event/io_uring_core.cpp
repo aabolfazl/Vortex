@@ -148,7 +148,7 @@ void io_uring_core::run() {
     io_uring_cqe* cqe;
 
     while (true){
-        constexpr int timeout_ms = 1000;
+        constexpr int timeout_ms = 500;
         __kernel_timespec ts{};
         ts.tv_sec = 0;
         ts.tv_nsec = timeout_ms * 1000000;
