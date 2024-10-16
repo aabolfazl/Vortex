@@ -11,16 +11,14 @@
 
 #include "process_manager.h"
 
-#include <iostream>
-#include <thread>
-#include <unistd.h>
-#include <cstring>
-#include <sched.h>
-#include <vector>
-#include <thread>
 #include <cerrno>
 #include <cstring>
+#include <iostream>
+#include <sched.h>
 #include <sys/wait.h>
+#include <thread>
+#include <unistd.h>
+#include <vector>
 
 #include "logger/logger.h"
 #include "worker/worker_process.h"
@@ -33,31 +31,34 @@ u_int process_manager::get_cores_size() {
 void process_manager::create_workers() {
     const unsigned int numWorkers = get_cores_size();
 
-    for (unsigned int i = 0; i < numWorkers; ++i){
+    for (unsigned int i = 0; i < numWorkers; ++i) {
         const pid_t pid = fork();
 
-        if (pid == -1){
+        if (pid == -1) {
             logger::info("Failed to fork");
-        } else if (pid > 0){
+        } else if (pid > 0) {
             logger::info("process {} started.", pid);
             _worker_processes.push_back(pid);
-        } else{
+        } else {
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
             CPU_SET(i % numWorkers, &cpuset);
 
             auto childPid = getpid();
 
-            if (sched_setaffinity(0, sizeof(cpu_set_t), &cpuset) == -1){
+            if (sched_setaffinity(0, sizeof(cpu_set_t), &cpuset) == -1) {
                 throw std::runtime_error("Failed to set CPU affinity: " + std::string(std::strerror(errno)));
             }
 
-            const char* configPath = getenv("config_file");
-            if (configPath == nullptr){
+            const char *configPath = getenv("config_file");
+
+            if (configPath == nullptr) {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }
 
-            const auto worker = worker_process(childPid, configPath);
+            auto cl = std::make_unique<config::ConfigLoader>(configPath);
+
+            const auto worker = worker_process{};
             worker.start();
         }
     }
@@ -65,10 +66,10 @@ void process_manager::create_workers() {
 
     logger::info("Master waiting for all workers to finish.");
 
-    for (const auto pid : _worker_processes){
+    for (const auto pid : _worker_processes) {
         waitpid(pid, nullptr, 0);
     }
 
     logger::info("All worker processes finished.");
 }
-} //end core
+} // namespace vortex::core

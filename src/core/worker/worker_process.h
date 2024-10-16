@@ -19,7 +19,7 @@
 namespace vortex::core {
 class worker_process {
 public:
-    explicit worker_process(pid_t pid, const std::string& configPath);
+    explicit worker_process();
 
     ~worker_process();
 
@@ -27,7 +27,7 @@ public:
 
 private:
     std::unique_ptr<tcp_server> _server;
-    std::shared_ptr<config::ConfigLoader> _config_loader;
+    std::unique_ptr<config::ConfigLoader> _config_loader;
 };
 } // end vortex::core
 

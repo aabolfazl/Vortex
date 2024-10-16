@@ -9,20 +9,15 @@
  *
  */
 
-#include "worker_process.h"
+#include <memory>
 #include "config/Config.h"
 #include "logger/logger.h"
-#include <memory>
+#include "worker_process.h"
 
 namespace vortex::core {
-worker_process::worker_process(
-    const pid_t pid,
-    const std::string& configPath
-) : _config_loader(std::make_unique<config::ConfigLoader>(configPath)) {
-    
-    _server = std::make_unique<tcp_server>(_config_loader->load());
 
-    logger::info("WorkerProcess started with {} id", pid);
+worker_process::worker_process() : _server(std::make_unique<tcp_server>()) {
+    logger::info("WorkerProcess started");
 }
 
 void worker_process::start() const {
@@ -31,4 +26,4 @@ void worker_process::start() const {
 }
 
 worker_process::~worker_process() = default;
-}
+} // namespace vortex::core

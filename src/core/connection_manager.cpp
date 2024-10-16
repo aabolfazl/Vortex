@@ -14,21 +14,29 @@
 #include "connection_acceptor.h"
 #include "connection_manager.h"
 #include "io_uring_worker.h"
+#include "logger/logger.h"
 
 namespace vortex::core {
-connection_manager::connection_manager(const config::config_ptr config_ptr) :
-    _config_ptr(config_ptr),
-    _worker_ptr(std::shared_ptr<event::io_uring_worker>()),
-    _connection_acceptor_ptr(std::make_unique<connection_acceptor>(_worker_ptr, config_ptr->listener.port)) {
+connection_manager::connection_manager() :
+    _worker_ptr(std::make_shared<event::io_uring_worker>()),
+    _connection_acceptor_ptr(std::make_unique<connection_acceptor>(_worker_ptr, config::config()->listener.port)) {
+
+    logger::info("connection_manager");
 
     _connection_acceptor_ptr->setAcceptCallback([&](int fd) { on_new_connection_established(fd); });
 }
 
 void connection_manager::on_new_connection_established(int fd) {
+    logger::info("on_new_connection_established {}", fd);
+
+    // select a server acording to the selection alghoritim
+    //auto client = std::make_shared<client_connection>();
+
+
 }
 
 void connection_manager::start_accept_connections() {
-    _connection_acceptor_ptr->listen();
+    _worker_ptr->loop();
 }
 
 connection_manager::~connection_manager() {

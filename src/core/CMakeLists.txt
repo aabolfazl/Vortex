@@ -29,6 +29,10 @@ add_library(core STATIC
         connection_acceptor.h
         connection_manager.cpp
         connection_manager.h
+        client/client_connection.h
+        client/client_connection.cpp
+        server/server_connection.h
+        server/server_connection.cpp
         logger/logger.h
 )
 

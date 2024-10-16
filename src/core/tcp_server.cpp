@@ -19,8 +19,8 @@
 #include "logger/logger.h"
 
 namespace vortex::core {
-tcp_server::tcp_server(config::config_ptr config_ptr) :
-    _connection_manager_ptr(std::make_shared<connection_manager>(config_ptr)) {}
+tcp_server::tcp_server() : _connection_manager_ptr(std::make_shared<connection_manager>()) {
+}
 
 auto tcp_server::on_new_connection(int fd) -> void {
     logger::info("onNewClientConnected {}", fd);
@@ -38,5 +38,6 @@ auto tcp_server::start() -> void {
     _connection_manager_ptr->start_accept_connections();
 }
 
-auto tcp_server::stop() -> void {}
+auto tcp_server::stop() -> void {
+}
 } // namespace vortex::core
