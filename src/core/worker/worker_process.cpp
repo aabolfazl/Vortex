@@ -10,9 +10,9 @@
  */
 
 #include <memory>
-#include "config/Config.h"
-#include "logger/logger.h"
 #include "worker_process.h"
+
+#include "core/logger/logger.h"
 
 namespace vortex::core {
 

@@ -10,11 +10,7 @@
  */
 
 #include "ConfigLoader.h"
-#include "config/Config.h"
-#include "logger/logger.h"
-
 #include <boost/json/parse.hpp>
-#include <cmath>
 #include <fstream>
 #include <iostream>
 #include <utility>

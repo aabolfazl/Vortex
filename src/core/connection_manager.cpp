@@ -13,12 +13,13 @@
 #include "config/Config.h"
 #include "connection_acceptor.h"
 #include "connection_manager.h"
-#include "io_uring_worker.h"
+
+#include "event/io_uring_worker_impl.h"
 #include "logger/logger.h"
 
 namespace vortex::core {
 connection_manager::connection_manager() :
-    _worker_ptr(std::make_shared<event::io_uring_worker>()),
+    _worker_ptr(std::make_shared<event::io_uring_worker_impl>()),
     _connection_acceptor_ptr(std::make_unique<connection_acceptor>(_worker_ptr, config::config()->listener.port)) {
 
     logger::info("connection_manager");

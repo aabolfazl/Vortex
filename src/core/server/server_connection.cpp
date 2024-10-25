@@ -9,8 +9,9 @@
  *
  */
 
-#include "server/server_connection.h"
-#include "io_uring_core.h"
+#include "server_connection.h"
+#include "core/interfaces/event/io_uring.h"
+
 namespace vortex::core {
 server_connection::server_connection(const event::os_fd_t fd) {
 

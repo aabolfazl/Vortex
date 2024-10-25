@@ -21,7 +21,7 @@
 
 namespace vortex::event {
 class io_uring_socket;
-class io_uring_worker;
+class io_uring_worker_impl;
 class io_request;
 
 enum class io_uring_result { success, error };
@@ -44,30 +44,42 @@ enum io_uring_socket_status {
     closed,
 };
 
-enum class IoUringSocketType {
-    Unknown,
-    Accept,
-    Server,
-    Client,
+enum class io_uring_socket_type {
+    unknown,
+    accept,
+    server,
+    client,
 };
 
 class io_request final {
 public:
     enum class request_type : uint8_t {
         accept = 0x1,
-        connect = 0x2,
-        read = 0x4,
-        write = 0x8,
-        close = 0x10,
-        cancel = 0x20,
-        shutdown = 0x40,
+        Connect = 0x2,
+        Read = 0x4,
+        Write = 0x8,
+        Close = 0x10,
+        Cancel = 0x20,
+        Shutdown = 0x40,
     };
 
-    virtual ~io_request() = default;
+    io_request(const request_type type, io_uring_socket& socket) :
+        type_(type),
+        socket_(socket) {}
 
-    auto type() const -> request_type;
+    virtual ~io_request();
 
-    auto socket() const -> io_uring_socket;
+    request_type type() const {
+        return type_;
+    }
+
+    io_uring_socket& socket() const {
+        return socket_;
+    }
+
+private:
+    request_type type_;
+    io_uring_socket& socket_;
 };
 
 using file_ready_cb = std::function<uint32_t>;

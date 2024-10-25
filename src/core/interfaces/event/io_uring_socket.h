@@ -14,37 +14,35 @@
 #include "io_uring.h"
 
 #include <cstdint>
-#include <list>
-#include <netinet/in.h>
 
 #include "functional"
-#include "liburing.h"
 #include "memory"
+#include "common/traits.h"
 
 namespace vortex::event {
 using accept_callback = std::function<void(int fd)>;
 
-class io_uring_socket {
+class io_uring_socket : traits::non_copyable<io_uring_socket>, traits::non_moveable<io_uring_socket> {
 public:
     virtual ~io_uring_socket() = default;
 
-    auto getFd() const noexcept -> os_fd_t;
-    auto close() noexcept -> void;
-    auto enableRead() noexcept -> void;
-    auto disableRead() noexcept -> void;
-    auto enableCloseEvent(bool enable) noexcept -> void;
-    auto connect(uint32_t address) noexcept -> void;
-    auto write(uint8_t &data) noexcept -> void;
-    auto write(const uint8_t *slices, uint64_t num_slice) noexcept -> uint64_t;
-    auto shutdown(int how) noexcept -> void;
-    auto onAccept(io_request *req, int32_t result) const noexcept -> void;
-    auto onConnect(io_request *req, int32_t result) noexcept -> void;
-    auto onRead(io_request *req, int32_t result) noexcept -> void;
-    auto onWrite(io_request *req, int32_t result) noexcept -> void;
-    auto onClose(io_request *req, int32_t result) noexcept -> void;
-    auto onCancel(io_request *req, int32_t result) noexcept -> void;
-    auto onShutdown(io_request *req, int32_t result) noexcept -> void;
-    auto setAcceptCallBack(const accept_callback &callback) noexcept -> void;
-    auto getStatus() const noexcept -> io_uring_socket_status;
+    virtual auto get_fd() const noexcept -> os_fd_t = 0;
+    virtual auto close() noexcept -> void = 0;
+    virtual auto enable_read() noexcept -> void = 0;
+    virtual auto disabler_read() noexcept -> void = 0;
+    virtual auto enable_close_event(bool enable) noexcept -> void = 0;
+    virtual auto connect(uint32_t address) noexcept -> void = 0;
+    virtual auto write(uint8_t &data) noexcept -> void = 0;
+    virtual auto write(const uint8_t *slices, uint64_t num_slice) noexcept -> uint64_t = 0;
+    virtual auto shutdown(int how) noexcept -> void = 0;
+    virtual auto on_accept(io_request *req, int32_t result) const noexcept -> void = 0;
+    virtual auto on_connect(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto on_read(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto on_write(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto on_close(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto on_cancel(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto on_shutdown(io_request *req, int32_t result) noexcept -> void = 0;
+    virtual auto set_accept_call_back(const accept_callback &callback) noexcept -> void = 0;
+    virtual auto get_status() const noexcept -> io_uring_socket_status = 0;
 };
 } // namespace vortex::event

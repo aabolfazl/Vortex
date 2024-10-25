@@ -13,10 +13,7 @@
 #define VORTEX_TCPSERVER_H
 
 
-#include "../Vortex.h"
 #include "config/Config.h"
-#include "config/ConfigLoader.h"
-#include "connection_acceptor.h"
 #include "connection_manager.h"
 
 namespace vortex::core {

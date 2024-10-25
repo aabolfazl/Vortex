@@ -14,10 +14,9 @@
 
 #include "socket.h"
 #include <memory>
-#include <functional>
 
-#include "io_uring_socket.h"
-#include "io_uring_worker.h"
+#include "interfaces/event/io_uring_socket.h"
+#include "interfaces/event/io_uring_worker.h"
 
 namespace vortex::core {
 
@@ -34,7 +33,7 @@ public:
 
     connection_acceptor& operator=(connection_acceptor&&) noexcept(true) = default;
 
-    auto setAcceptCallback(const event::AcceptCallback& callback) const -> void;
+    auto setAcceptCallback(const event::accept_callback& callback) const -> void;
 
     auto listen() const -> void;
 

@@ -12,8 +12,6 @@
 #include <memory>
 #include <string>
 #include "Config.h"
-#include "iostream"
-#include "logger/logger.h"
 
 namespace vortex::core::config {
 

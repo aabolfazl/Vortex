@@ -14,7 +14,9 @@
 
 #include <memory>
 #include <sched.h>
-#include "tcp_server.h"
+
+#include "core/tcp_server.h"
+#include "core/config/ConfigLoader.h"
 
 namespace vortex::core {
 class worker_process {

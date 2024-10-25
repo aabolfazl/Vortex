@@ -10,19 +10,29 @@
 */
 
 #pragma once
+#include <stdexcept>
+
+#include "common/traits.h"
+#include "event/io_uring_core.h"
 
 namespace vortex::core {
 
-class socket_handle : private traits::non_copyable<socket_handle>, private traits::non_moveable<socket_handle> {
+class socket_handle : traits::non_copyable<socket_handle>, traits::non_moveable<socket_handle> {
 public:
-    explicit socket_handle(uint8_t fd) : fd_(fd) {}
+    explicit socket_handle(const int fd) :
+        fd_(fd) {
+        if (fd < 0) {
+            throw std::invalid_argument("Invalid file descriptor");
+        }
+    }
+
     ~socket_handle() {
         if (fd_ >= 0) {
             close(fd_);
         }
     }
 
-    auto get() const-> uint8_t {
+    auto get() const -> uint8_t {
         return fd_;
     }
 
@@ -31,7 +41,7 @@ public:
     }
 
 private:
-    uint8_t fd_;
+    int fd_;
 };
 
 } // namespace vortex::core
