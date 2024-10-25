@@ -9,12 +9,11 @@
  *
  */
 
-#ifndef VORTEXAPP_H
-#define VORTEXAPP_H
+#pragma once
+
 #include <memory>
 
-#include "process_manager.h"
-#include <config/ConfigLoader.h>
+#include "core/process_manager.h"
 
 namespace vortex {
 class vortex_app {
@@ -26,5 +25,3 @@ private:
     std::unique_ptr<core::process_manager> processManager = nullptr;
 };
 } // vortex
-
-#endif //VORTEXAPP_H

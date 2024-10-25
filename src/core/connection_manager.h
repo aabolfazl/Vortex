@@ -9,18 +9,12 @@
  *
  */
 
-#ifndef CONNECTIONMANAGER_H
-#define CONNECTIONMANAGER_H
+#pragma once
 
 #include <memory>
-#include <mutex>
-#include <sys/types.h>
 #include <unordered_map>
-#include <vector>
 #include "client/client_connection.h"
-#include "config/Config.h"
 #include "connection_acceptor.h"
-#include "io_uring_worker.h"
 
 namespace vortex::core {
 class connection_manager final {
@@ -41,5 +35,3 @@ private:
 using connection_manager_ptr = std::shared_ptr<connection_manager>;
 
 } // namespace vortex::core
-
-#endif // PROCESSMANAGER_H

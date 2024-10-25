@@ -10,6 +10,9 @@
  */
 
 #include "vortex_app.h"
+
+#include <stdlib.h>
+#include <string>
 #include <thread>
 
 namespace vortex {
