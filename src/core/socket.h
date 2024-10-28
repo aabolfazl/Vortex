@@ -12,6 +12,7 @@
 #ifndef VORTEX_SOCKET_H
 #define VORTEX_SOCKET_H
 
+#include <memory>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -47,6 +48,8 @@ public:
 private:
     int _socket_fd;
 };
+
+using socket_ptr = std::unique_ptr<socket>;
 
 }
 

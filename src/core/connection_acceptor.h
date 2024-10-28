@@ -12,43 +12,47 @@
 #ifndef VORTEX_CONNECTION_ACCEPTOR_H
 #define VORTEX_CONNECTION_ACCEPTOR_H
 
-#include "socket.h"
 #include <memory>
 
+#include "socket.h"
+#include "interfaces/async_socket.h"
+#include "interfaces/socket_event_handler.h"
+#include "interfaces/socket_factory.h"
 #include "interfaces/event/io_uring_socket.h"
-#include "interfaces/event/io_uring_worker.h"
 
 namespace vortex::core {
 
-class connection_acceptor final {
+class connection_acceptor final : public socket_event_handler, public std::enable_shared_from_this<connection_acceptor> {
 public:
     explicit connection_acceptor(
-        const event::io_uring_worker_ptr& worker_ptr,
-        uint16_t port
-    );
+        const async_socket_factory_ptr &factory,
+        uint16_t port);
 
-    ~connection_acceptor();
+    ~connection_acceptor() override;
 
-    connection_acceptor(connection_acceptor&&) noexcept(true) = default;
-
-    connection_acceptor& operator=(connection_acceptor&&) noexcept(true) = default;
-
-    auto setAcceptCallback(const event::accept_callback& callback) const -> void;
-
-    auto listen() const -> void;
+    auto set_accept_callback(const accept_callback &callback) -> void;
 
     auto fd() const -> int {
-        return _socket->get_fd();
+        return acceptor_async_socket_ptr->get_fd();
     }
 
-private:
-    std::unique_ptr<socket> _socket;
-    std::unique_ptr<event::io_uring_socket> _io_uring_socket;
+    auto on_accept(int client_fd, const std::error_code &ec) noexcept -> void override;
+    auto on_connect(const std::error_code &ec) noexcept -> void override {}
+    auto on_read(const uint8_t *data, size_t length, const std::error_code &ec) noexcept -> void override {}
+    auto on_write(size_t bytes_written, const std::error_code &ec) noexcept -> void override {}
+    auto on_close(const std::error_code &ec) noexcept -> void override {}
+    void start() const;
 
-    auto onRead() const -> void;
+private:
+
+    async_socket_factory_ptr async_socket_factory_;
+    async_socket_ptr acceptor_async_socket_ptr;
+    socket_ptr acceptor_socket_ptr_;
+
+    accept_callback accept_callback_;
 };
 
-using connection_acceptor_ptr = std::unique_ptr<connection_acceptor>;
+using connection_acceptor_ptr = std::shared_ptr<connection_acceptor>;
 
 }
 

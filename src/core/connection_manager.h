@@ -26,7 +26,10 @@ public:
 
 private:
     void on_new_connection_established(int fd);
+    auto init_servers_list() -> void;
+
     event::io_uring_worker_ptr _worker_ptr;
+    async_socket_factory_ptr _socket_factory_ptr;
     connection_acceptor_ptr _connection_acceptor_ptr;
 
     std::unordered_map<int, client_connection_ptr> client_connections;

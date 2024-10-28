@@ -28,19 +28,26 @@ set(VORTEX_INTERFACE_HEADERS
         core/interfaces/event/io_uring_core.h
         core/interfaces/event/io_uring_socket.h
         core/interfaces/event/io_uring_worker.h
+        core/interfaces/socket_event_handler.h
+        core/interfaces/async_socket.h
+        core/interfaces/socket_factory.h
 )
 
-add_library(vortex STATIC
-        common/traits.h
-        ${VORTEX_INTERFACE_HEADERS}
-
-        # Event files
+set(VORTEX_EVENT_MODULE
         event/io_uring_core_impl.cpp
         event/io_uring_core_impl.h
         event/io_uring_worker_impl.cpp
         event/io_uring_worker_impl.h
         event/io_uring_socket_impl.cpp
         event/io_uring_socket_impl.h
+        event/io_uring_socket_factory.cpp
+        event/io_uring_socket_factory.h
+)
+
+add_library(vortex STATIC
+        common/traits.h
+        ${VORTEX_INTERFACE_HEADERS}
+        ${VORTEX_EVENT_MODULE}
 
         # Core files
         core/tcp_server.cpp
@@ -64,8 +71,8 @@ add_library(vortex STATIC
         core/server/server_connection.cpp
         core/server/server_connection.h
         core/logger/logger.h
-
-
+        common/address.h
+        common/address.cpp
 )
 
 target_include_directories(vortex PUBLIC

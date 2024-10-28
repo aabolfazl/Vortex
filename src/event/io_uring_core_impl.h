@@ -28,6 +28,8 @@ public:
     ~io_uring_core_impl() override;
 
     auto prepare_accept(io_uring_socket &socket) noexcept -> io_uring_result override;
+    auto prepare_connect(os_fd_t fd, const core::ipv4 &address,
+                         io_request *user_data) noexcept -> io_uring_result override;
     auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
                        io_request *user_data) noexcept -> io_uring_result override;
     auto prepare_writev(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
@@ -37,6 +39,7 @@ public:
     auto prepare_shutdown(os_fd_t fd, int how, io_request *user_data) noexcept -> io_uring_result override;
     auto submit() noexcept -> io_uring_result override;
     auto run() noexcept -> void override;
+    auto exit() noexcept -> void override;
 
 private:
     io_uring ring_{};

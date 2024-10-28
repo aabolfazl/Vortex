@@ -12,12 +12,9 @@
 #pragma once
 
 #include <cstdint>
-#include <list>
-#include <netinet/in.h>
 
 #include "functional"
 #include "liburing.h"
-#include "memory"
 
 namespace vortex::event {
 class io_uring_socket;
@@ -55,7 +52,7 @@ class io_request final {
 public:
     enum class request_type : uint8_t {
         accept = 0x1,
-        Connect = 0x2,
+        connect = 0x2,
         Read = 0x4,
         Write = 0x8,
         Close = 0x10,
@@ -63,23 +60,23 @@ public:
         Shutdown = 0x40,
     };
 
-    io_request(const request_type type, io_uring_socket& socket) :
-        type_(type),
-        socket_(socket) {}
+    io_request(const request_type type, io_uring_socket &socket) :
+        _type(type),
+        _socket(socket) {}
 
-    virtual ~io_request();
+    ~io_request() = default;
 
     request_type type() const {
-        return type_;
+        return _type;
     }
 
-    io_uring_socket& socket() const {
-        return socket_;
+    io_uring_socket &socket() const {
+        return _socket;
     }
 
 private:
-    request_type type_;
-    io_uring_socket& socket_;
+    request_type _type;
+    io_uring_socket &_socket;
 };
 
 using file_ready_cb = std::function<uint32_t>;

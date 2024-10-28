@@ -13,6 +13,7 @@
 #include <stdexcept>
 
 #include "common/traits.h"
+#include "core/logger/logger.h"
 #include "event/io_uring_core.h"
 
 namespace vortex::core {
@@ -27,6 +28,7 @@ public:
     }
 
     ~socket_handle() {
+        logger::info("Closing socket {}", fd_);
         if (fd_ >= 0) {
             close(fd_);
         }

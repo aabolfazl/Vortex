@@ -27,6 +27,7 @@ public:
     ~io_uring_worker_impl() override;
 
     auto submit_accept_socket(io_uring_socket &socket) const noexcept -> bool override;
+    auto submit_connect_request(io_uring_socket &socket, const core::ipv4 &address) noexcept -> io_request* override;
     auto loop() const noexcept -> void override;
 
     auto handle_completion(const io_uring_cqe *cqe) noexcept -> void override;

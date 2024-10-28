@@ -12,6 +12,7 @@
 #pragma once
 
 #include "io_uring.h"
+#include "common/address.h"
 
 namespace vortex::event {
 
@@ -20,6 +21,8 @@ public:
     virtual ~io_uring_core() = default;
 
     virtual auto prepare_accept(io_uring_socket &socket) noexcept -> io_uring_result = 0;
+    virtual auto prepare_connect(os_fd_t fd, const core::ipv4 &address,
+                                 io_request *user_data) noexcept -> io_uring_result = 0;
     virtual auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
                                io_request *user_data) noexcept -> io_uring_result = 0;
     virtual auto prepare_writev(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
@@ -30,6 +33,7 @@ public:
     virtual auto prepare_shutdown(os_fd_t fd, int how, io_request *user_data) noexcept -> io_uring_result = 0;
     virtual auto submit() noexcept -> io_uring_result = 0;
     virtual auto run() noexcept -> void = 0;
+    virtual auto exit() noexcept -> void = 0;
 };
 
 using io_uring_core_ptr = std::unique_ptr<io_uring_core>;
