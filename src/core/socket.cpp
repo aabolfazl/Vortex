@@ -21,7 +21,7 @@
 namespace vortex::core {
 socket::socket() {
     _socket_fd = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (_socket_fd < 0){
+    if (_socket_fd < 0) {
         logger::error("Failed to create socket");
         _exit(EXIT_FAILURE);
     }
@@ -34,20 +34,21 @@ auto socket::bind(uint16_t port) const -> void {
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(port);
 
-    if (::bind(_socket_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0){
+    if (::bind(_socket_fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0) {
         logger::error("Bind failed {}", std::string(strerror(errno)));
         close();
-        _exit(EXIT_FAILURE);
     }
-    logger::info("Bind success on port: ", port);
+    logger::info("Bind success on port: {}", port);
 }
 
 auto socket::listen() const -> void {
+    logger::info("Listening... {}", _socket_fd);
     assert(_socket_fd > 0);
     const int ret = ::listen(_socket_fd, SOMAXCONN);
-    if (ret < 0){
-        _exit(EXIT_FAILURE);
+    if (ret < 0) {
+        logger::error("Listen failed {}", std::string(strerror(errno)));
     }
+    logger::info("Listen success with fd: {}", _socket_fd);
 }
 
 auto socket::accept() const -> int {
@@ -55,15 +56,15 @@ auto socket::accept() const -> int {
 
     sockaddr_in clientAddr = {};
     socklen_t clientLen = sizeof(clientAddr);
-    const int peerFd = ::accept(_socket_fd, reinterpret_cast<sockaddr*>(&clientAddr), &clientLen);
-    if (peerFd < 0){
-        logger::error("accept error");
-    }
+    const int peerFd = ::accept(_socket_fd, reinterpret_cast<sockaddr *>(&clientAddr), &clientLen);
+    // if (peerFd < 0) {
+        // logger::error("accept error");
+    // }
 
     return peerFd;
 }
 
-auto socket::read(uint8_t* buffer, const uint64_t len) const -> size_t {
+auto socket::read(uint8_t *buffer, const uint64_t len) const -> size_t {
     return ::read(_socket_fd, buffer, len);
 }
 
@@ -86,12 +87,14 @@ auto socket::get_fd() const -> int {
 }
 
 auto socket::close() const -> void {
-    if (_socket_fd >= 0){
+    logger::info("Closing... {}", _socket_fd);
+    if (_socket_fd >= 0) {
         ::close(_socket_fd);
     }
 }
 
 socket::~socket() {
+    logger::info("~socket {}", _socket_fd);
     close();
 }
 }

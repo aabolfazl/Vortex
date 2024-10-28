@@ -13,30 +13,45 @@
 #include "logger/logger.h"
 #include <memory>
 
+#include "socket.h"
 #include "event/io_uring_socket_impl.h"
 
 namespace vortex::core {
 connection_acceptor::connection_acceptor(
-    const event::io_uring_worker_ptr& workerPtr,
+    const async_socket_factory_ptr &factory,
     const uint16_t port
-) : _socket(std::make_unique<socket>()),
-    _io_uring_socket(std::make_unique<event::io_uring_socket_impl>(_socket->get_fd(), event::io_uring_socket_type::accept)) {
-    logger::info("connection_acceptor startet on port {}", port);
+    ):
+    async_socket_factory_(factory),
+    acceptor_socket_ptr_(std::make_unique<socket>()) {
 
-    _socket->set_reuse_port(true);
-    _socket->bind(port);
-    _socket->set_non_blocking();
-    _socket->listen();
+    acceptor_socket_ptr_->set_reuse_port(true);
+    acceptor_socket_ptr_->bind(port);
+    acceptor_socket_ptr_->set_non_blocking();
+    acceptor_socket_ptr_->listen();
 
-    workerPtr->submit_accept_socket(*_io_uring_socket);
+    acceptor_async_socket_ptr = async_socket_factory_->create_acceptor(acceptor_socket_ptr_->get_fd());
+
+    logger::info("connection_acceptor started on port {}", port);
 }
 
-void connection_acceptor::setAcceptCallback(const event::accept_callback& callback) const {
-    _io_uring_socket->set_accept_call_back(callback);
+void connection_acceptor::set_accept_callback(const accept_callback &callback) {
+    if (acceptor_async_socket_ptr && !acceptor_async_socket_ptr->has_event_handler()) {
+        acceptor_async_socket_ptr->set_event_handler(shared_from_this());
+    }
+
+    accept_callback_ = callback;
 }
 
-auto connection_acceptor::listen() const -> void {
-    _socket->listen();
+auto connection_acceptor::on_accept(const int client_fd, const std::error_code &ec) noexcept -> void {
+    if (accept_callback_) {
+        accept_callback_(client_fd);
+    }
+}
+
+void connection_acceptor::start() const {
+    if (acceptor_async_socket_ptr) {
+        acceptor_async_socket_ptr->start_accept();
+    }
 }
 
 connection_acceptor::~connection_acceptor() {}

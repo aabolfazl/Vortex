@@ -4,3 +4,4 @@
 .cache
 /build
 compile_commands.json
+test/go/build

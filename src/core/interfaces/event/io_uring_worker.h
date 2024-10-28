@@ -12,12 +12,9 @@
 #pragma once
 
 #include "io_uring.h"
+#include "common/address.h"
 
-#include <cstring>
-#include <iostream>
 #include <memory>
-#include <netinet/in.h>
-#include <stdexcept>
 
 namespace vortex::event {
 class io_uring_worker {
@@ -27,7 +24,7 @@ public:
     // virtual auto add_server_socket(os_fd_t fd) noexcept -> io_uring_socket = 0;
     // virtual auto add_client_socket(os_fd_t fd) noexcept -> io_uring_socket = 0;
     virtual auto submit_accept_socket(io_uring_socket &socket) const noexcept -> bool = 0;
-    // virtual auto submit_connect_request(io_uring_socket &socket, const uint8_t &address) noexcept -> io_request = 0;
+    virtual auto submit_connect_request(io_uring_socket &socket, const core::ipv4 &address) noexcept -> io_request* = 0;
     // virtual auto submit_cancel_request(io_uring_socket &socket, io_request *request_to_cancel) noexcept -> io_request = 0;
     // virtual auto submit_shutdown_request(io_uring_socket &socket, int how) noexcept -> io_request = 0;
     // virtual auto get_num_of_sockets() const noexcept -> uint8_t = 0;

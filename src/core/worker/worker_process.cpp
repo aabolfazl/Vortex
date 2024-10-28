@@ -17,7 +17,7 @@
 namespace vortex::core {
 
 worker_process::worker_process() : _server(std::make_unique<tcp_server>()) {
-    logger::info("WorkerProcess started");
+    logger::info("WorkerProcess started pid: {}", getpid());
 }
 
 void worker_process::start() const {
