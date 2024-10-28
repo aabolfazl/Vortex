@@ -11,21 +11,21 @@
 
 #pragma once
 
-#include <arpa/inet.h>
-#include <cstring>
 #include <netinet/in.h>
 #include <string>
 
+#include "traits.h"
+
 namespace vortex::core {
-class ipv4 {
+class ipv4 : traits::non_copyable<ipv4>, traits::non_moveable<ipv4> {
 public:
     explicit ipv4(const std::string &ip_address, uint16_t port = 8080);
 
-    auto get_sock_addr() const -> const sockaddr *;
-    static auto sock_addr_len() -> socklen_t;
-    auto to_string() const -> std::string;
+    auto get_sock_addr() const noexcept -> const sockaddr *;
+    static auto sock_addr_len() noexcept -> socklen_t;
+    auto to_string() const noexcept -> std::string;
 
-    auto get_port() const -> uint16_t;
+    auto get_port() const noexcept -> uint16_t;
 
 private:
     sockaddr_in addr_{};

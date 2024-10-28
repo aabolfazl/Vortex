@@ -11,6 +11,9 @@
 
 #include "address.h"
 
+#include <arpa/inet.h>
+#include <cstring>
+
 namespace vortex::core {
 
 ipv4::ipv4(const std::string &ip_address, const uint16_t port) :

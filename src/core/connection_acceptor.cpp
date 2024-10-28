@@ -35,7 +35,7 @@ connection_acceptor::connection_acceptor(
 }
 
 void connection_acceptor::set_accept_callback(const accept_callback &callback) {
-    if (!acceptor_async_socket_ptr->has_event_handler()) {
+    if (acceptor_async_socket_ptr && !acceptor_async_socket_ptr->has_event_handler()) {
         acceptor_async_socket_ptr->set_event_handler(shared_from_this());
     }
 
@@ -49,7 +49,9 @@ auto connection_acceptor::on_accept(const int client_fd, const std::error_code &
 }
 
 void connection_acceptor::start() const {
-    acceptor_async_socket_ptr->start_accept();
+    if (acceptor_async_socket_ptr) {
+        acceptor_async_socket_ptr->start_accept();
+    }
 }
 
 connection_acceptor::~connection_acceptor() {}
