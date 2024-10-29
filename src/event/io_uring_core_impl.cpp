@@ -171,6 +171,7 @@ auto io_uring_core_impl::run() noexcept -> void {
                 ++cqe_count;
                 auto *request = static_cast<io_request *>(io_uring_cqe_get_data(cqe));
                 if (request) {
+                    request = std::launder(request);
                     switch (request->type()) {
                     case io_request::request_type::accept:
                         request->socket().on_accept(request, cqe->res);
