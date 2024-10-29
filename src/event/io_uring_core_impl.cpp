@@ -43,8 +43,6 @@ io_uring_core_impl::~io_uring_core_impl() {
 }
 
 auto io_uring_core_impl::prepare_accept(io_uring_socket &socket) noexcept -> io_uring_result {
-    std::cout << "prepare_accept: " << &socket << std::endl;
-
     if (socket.get_fd() <= 0) {
         core::logger::error("Failed to prepare accept on socket {}", socket.get_fd());
         return io_uring_result::error;
