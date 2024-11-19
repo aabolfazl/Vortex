@@ -9,21 +9,22 @@
  *
  */
 
-#include "ConfigLoader.h"
+#include "config_loader.h"
 #include <boost/json/parse.hpp>
 #include <fstream>
 #include <iostream>
 #include <utility>
 
 namespace vortex::core::config {
-ConfigLoader::ConfigLoader(std::string configFile) : filePath(std::move(configFile)) {
+config_loader::config_loader(std::string configFile) : filePath(std::move(configFile)) {
     load();
 }
 
-void ConfigLoader::readFile() {
-    if (std::ifstream ifs(filePath); ifs) {
+void config_loader::readFile() {
+    std::ifstream ifs(filePath);
+    if (ifs) {
         try {
-            const std::string jsonContent((std::istreambuf_iterator(ifs)), (std::istreambuf_iterator<char>()));
+            const std::string jsonContent((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
             config = boost::json::parse(jsonContent).as_object();
         } catch (const std::exception &e) {
@@ -36,11 +37,11 @@ void ConfigLoader::readFile() {
     }
 }
 
-void ConfigLoader::load() {
+void config_loader::load() {
     if (config.empty()) {
         readFile();
     }
 
-    _config = Config::from_json(config);
+    _config = config::from_json(config);
 }
 } // namespace vortex::core::config

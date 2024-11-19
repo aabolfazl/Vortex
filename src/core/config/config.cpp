@@ -11,7 +11,7 @@
 
 #include <memory>
 #include <string>
-#include "Config.h"
+#include "config.h"
 
 namespace vortex::core::config {
 
@@ -32,8 +32,8 @@ int64_t get_int_or_default(const boost::json::object &obj, const std::string &ke
     return default_value;
 }
 
-std::unique_ptr<Config> Config::from_json(const boost::json::object &object) {
-    auto config_data = std::make_unique<Config>();
+std::unique_ptr<config> config::from_json(const boost::json::object &object) {
+    auto config_data = std::make_unique<config>();
 
     if (object.contains("listener")) {
         const auto &listener_obj = object.at("listener").as_object();
@@ -95,7 +95,7 @@ std::unique_ptr<Config> Config::from_json(const boost::json::object &object) {
     return config_data;
 }
 
-config_ptr config() {
+config_ptr get_config() {
     if (!_config) {
         throw std::runtime_error("Config is not initialized!");
     }

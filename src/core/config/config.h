@@ -63,7 +63,7 @@ struct Buffers {
     int64_t write_buffer_size = 0;
 };
 
-class Config {
+class config {
 public:
     Listener listener;
     std::vector<Backend> backends;
@@ -73,13 +73,13 @@ public:
     ResourceLimits resource_limits;
     Buffers buffers;
 
-    static std::unique_ptr<Config> from_json(const boost::json::object& object);
+    static std::unique_ptr<config> from_json(const boost::json::object& object);
 };
 
-using config_ptr = std::shared_ptr<config::Config>;
+using config_ptr = std::shared_ptr<config>;
 
 extern config_ptr _config;
 
-config_ptr config();
+config_ptr get_config();
 }
 #endif //CONFIG_H

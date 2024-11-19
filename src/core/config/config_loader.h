@@ -9,19 +9,17 @@
  *
  */
 
-
-#ifndef CONFIGLOADER_H
-#define CONFIGLOADER_H
+#pragma once
 
 #include <boost/json/object.hpp>
 #include <memory>
 #include <string>
-#include "Config.h"
+#include "config.h"
 
 namespace vortex::core::config {
-class ConfigLoader final {
+class config_loader final {
 public:
-    explicit ConfigLoader(std::string configFile);
+    explicit config_loader(std::string configFile);
 
     void load();
 
@@ -31,4 +29,3 @@ private:
     void readFile();
 };
 } // namespace vortex::core::config
-#endif // CONFIGLOADER_H
