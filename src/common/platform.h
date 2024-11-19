@@ -1,0 +1,34 @@
+/*
+ * Copyright © 2024 Vortex project
+ *
+ * This is the source code of the Vortex project.
+ * It is licensed under the MIT License; you should have received a copy
+ * of the license in this archive (see LICENSE).
+ *
+ * Author: Abolfazl Abbasi
+ *
+ */
+
+#pragma once
+
+typedef int os_fd_t;
+
+#define INVALID_SOCKET -1
+
+#define SOCKET_ERROR_AGAIN EAGAIN
+#define SOCKET_ERROR_NOT_SUP ENOTSUP
+#define SOCKET_ERROR_AF_NO_SUP EAFNOSUPPORT
+#define SOCKET_ERROR_IN_PROGRESS EINPROGRESS
+#define SOCKET_ERROR_PERM EPERM
+#define SOCKET_ERROR_ACCESS EACCES
+#define SOCKET_ERROR_MSG_SIZE EMSGSIZE
+#define SOCKET_ERROR_INTR EINTR
+#define SOCKET_ERROR_ADDR_NOT_AVAIL EADDRNOTAVAIL
+#define SOCKET_ERROR_INVAL EINVAL
+#define SOCKET_ERROR_ADDR_IN_USE EADDRINUSE
+#define SOCKET_ERROR_BADF EBADF
+#define SOCKET_ERROR_CONNRESET ECONNRESET
+#define SOCKET_ERROR_NETUNREACH ENETUNREACH
+#define SOCKET_ERROR_CONNREFUSED ECONNREFUSED
+#define SOCKET_ERROR_CONNABORTED ECONNABORTED
+#define SOCKET_ERROR_TIMEDOUT ETIMEDOUT

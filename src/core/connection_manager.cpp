@@ -10,20 +10,12 @@
  */
 
 #include <memory>
-#include "config/Config.h"
-#include "connection_acceptor.h"
+#include "config/config.h"
 #include "connection_manager.h"
-
-#include "event/io_uring_socket_factory.h"
-#include "event/io_uring_socket_impl.h"
-#include "event/io_uring_worker_impl.h"
 #include "logger/logger.h"
 
 namespace vortex::core {
-connection_manager::connection_manager() :
-    _worker_ptr(std::make_shared<event::io_uring_worker_impl>()),
-    _socket_factory_ptr(std::make_shared<event::io_uring_socket_factory>(_worker_ptr)),
-    _connection_acceptor_ptr(std::make_shared<connection_acceptor>(_socket_factory_ptr, config::config()->listener.port)) {
+connection_manager::connection_manager() {
 
     logger::info("connection_manager");
 
@@ -31,13 +23,13 @@ connection_manager::connection_manager() :
 }
 
 auto connection_manager::init_servers_list() -> void {
-    auto backends = config::config()->backends;
+    auto backends = config::get_config()->backends;
 
     for (auto it = backends.begin(); it != backends.end(); ++it) {
-        // auto server = std::make_shared<server_connection>(it);
-        // _worker_ptr->submit_connect_request();
-        // _upstream_server_connections.push_back(server);
-        // logger::info("init_servers_list {}", it->ip);
+        //  auto server = std::make_shared<connection>();
+        //  _worker_ptr->submit_connect_request();
+        //  _upstream_server_connections.push_back(server);
+        //  logger::info("init_servers_list {}", it->ip);
     }
 
     logger::info("init_servers_list size: {}", backends.size());
@@ -54,9 +46,7 @@ void connection_manager::on_new_connection_established(int fd) {
 }
 
 void connection_manager::start_accept_connections() {
-    _connection_acceptor_ptr->set_accept_callback([&](const int fd) { on_new_connection_established(fd); });
-    _connection_acceptor_ptr->start();
-    _worker_ptr->loop();
+
 }
 
 connection_manager::~connection_manager() {}

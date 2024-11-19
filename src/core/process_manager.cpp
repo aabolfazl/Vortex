@@ -20,8 +20,8 @@
 #include <unistd.h>
 #include <vector>
 
+#include "config/config_loader.h"
 #include "logger/logger.h"
-#include "worker/worker_process.h"
 
 namespace vortex::core {
 u_int process_manager::get_cores_size() {
@@ -56,10 +56,7 @@ void process_manager::create_workers() {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }
 
-            auto cl = std::make_unique<config::ConfigLoader>(configPath);
-
-            const auto worker = worker_process{};
-            worker.start();
+            auto cl = std::make_unique<config::config_loader>(configPath);
         }
     }
 

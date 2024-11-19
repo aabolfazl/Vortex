@@ -17,15 +17,15 @@
 #include <netinet/in.h>
 
 namespace vortex::core {
-class socket {
+class socket_impl {
 public:
-    explicit socket();
+    explicit socket_impl();
 
-    ~socket();
+    ~socket_impl();
 
-    socket(socket &&) noexcept(true) = default;
+    socket_impl(socket_impl &&) noexcept(true) = default;
 
-    socket &operator=(socket &&) noexcept(true) = default;
+    socket_impl &operator=(socket_impl &&) noexcept(true) = default;
 
     auto bind(uint16_t port) const -> void;
 
@@ -49,7 +49,7 @@ private:
     int _socket_fd;
 };
 
-using socket_ptr = std::unique_ptr<socket>;
+using socket_ptr = std::unique_ptr<socket_impl>;
 
 }
 

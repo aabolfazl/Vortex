@@ -15,65 +15,60 @@ FetchContent_MakeAvailable(fmt)
 
 find_package(Boost 1.76.0 REQUIRED COMPONENTS json)
 
-if (NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost not found")
-endif ()
+if(NOT Boost_FOUND)
+        message(FATAL_ERROR "Boost not found")
+endif()
 
 include_directories(/usr/include)
 find_library(URING_LIBRARY NAMES uring PATHS /usr/lib/x86_64-linux-gnu/)
 
 set(VORTEX_INTERFACE_HEADERS
-        core/interfaces/socket_handle.h
         core/interfaces/event/io_uring.h
         core/interfaces/event/io_uring_core.h
-        core/interfaces/event/io_uring_socket.h
-        core/interfaces/event/io_uring_worker.h
-        core/interfaces/socket_event_handler.h
-        core/interfaces/async_socket.h
-        core/interfaces/socket_factory.h
+        core/interfaces/sys_calls.h
+        core/interfaces/io_handle.h
+        core/interfaces/event/async_event.h
+        core/interfaces/event/dispatcher.h
 )
 
 set(VORTEX_EVENT_MODULE
         event/io_uring_core_impl.cpp
         event/io_uring_core_impl.h
-        event/io_uring_worker_impl.cpp
-        event/io_uring_worker_impl.h
-        event/io_uring_socket_impl.cpp
-        event/io_uring_socket_impl.h
-        event/io_uring_socket_factory.cpp
-        event/io_uring_socket_factory.h
 )
 
 add_library(vortex STATIC
         common/traits.h
+
+        # Interfaces
         ${VORTEX_INTERFACE_HEADERS}
+        # Event module
         ${VORTEX_EVENT_MODULE}
 
         # Core files
         core/tcp_server.cpp
         core/tcp_server.h
-        core/socket.cpp
-        core/socket.h
         core/process_manager.cpp
         core/process_manager.h
-        core/worker/worker_process.cpp
-        core/worker/worker_process.h
-        core/config/ConfigLoader.cpp
-        core/config/ConfigLoader.h
-        core/config/Config.cpp
-        core/config/Config.h
-        core/connection_acceptor.cpp
-        core/connection_acceptor.h
+        core/config/config_loader.cpp
+        core/config/config_loader.h
+        core/config/config.cpp
+        core/config/config.h
         core/connection_manager.cpp
         core/connection_manager.h
-        core/client/client_connection.cpp
-        core/client/client_connection.h
-        core/server/server_connection.cpp
-        core/server/server_connection.h
         core/logger/logger.h
         common/address.h
         common/address.cpp
+        common/sys_calls_impl.cpp
+        common/sys_calls_impl.h
+
+        common/platform.h
+
+        core/io/socket_io_handle_impl.cpp
+        core/io/socket_io_handle_impl.h
+        core/io/io_uring_dispacher_impl.cpp
+        core/io/io_uring_dispacher_impl.h
 )
+
 
 target_include_directories(vortex PUBLIC
         ${Boost_INCLUDE_DIRS}
@@ -87,3 +82,4 @@ target_link_libraries(vortex
 )
 
 target_compile_features(vortex PUBLIC cxx_std_17)
+

@@ -13,6 +13,7 @@
 
 #include "io_uring.h"
 #include "common/address.h"
+#include "core/interfaces/event/async_event.h"
 
 namespace vortex::event {
 
@@ -20,7 +21,7 @@ class io_uring_core {
 public:
     virtual ~io_uring_core() = default;
 
-    virtual auto prepare_accept(io_uring_socket &socket) noexcept -> io_uring_result = 0;
+    virtual auto prepare_accept(event::accept_operation_ptr ptr) noexcept -> io_uring_result = 0;
     virtual auto prepare_connect(os_fd_t fd, const core::ipv4 &address,
                                  io_request *user_data) noexcept -> io_uring_result = 0;
     virtual auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,

@@ -9,7 +9,7 @@
   *
   */
 
-#include "socket.h"
+#include "socket_impl.h"
 #include <assert.h>
 #include <sys/socket.h>
 #include <cstring>
@@ -19,7 +19,7 @@
 #include "logger/logger.h"
 
 namespace vortex::core {
-socket::socket() {
+socket_impl::socket_impl() {
     _socket_fd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (_socket_fd < 0) {
         logger::error("Failed to create socket");
@@ -27,7 +27,7 @@ socket::socket() {
     }
 }
 
-auto socket::bind(uint16_t port) const -> void {
+auto socket_impl::bind(uint16_t port) const -> void {
     assert(_socket_fd > 0);
     sockaddr_in addr = {};
     addr.sin_family = AF_INET;
@@ -41,7 +41,7 @@ auto socket::bind(uint16_t port) const -> void {
     logger::info("Bind success on port: {}", port);
 }
 
-auto socket::listen() const -> void {
+auto socket_impl::listen() const -> void {
     logger::info("Listening... {}", _socket_fd);
     assert(_socket_fd > 0);
     const int ret = ::listen(_socket_fd, SOMAXCONN);
@@ -51,7 +51,7 @@ auto socket::listen() const -> void {
     logger::info("Listen success with fd: {}", _socket_fd);
 }
 
-auto socket::accept() const -> int {
+auto socket_impl::accept() const -> int {
     assert(_socket_fd > 0);
 
     sockaddr_in clientAddr = {};
@@ -64,36 +64,36 @@ auto socket::accept() const -> int {
     return peerFd;
 }
 
-auto socket::read(uint8_t *buffer, const uint64_t len) const -> size_t {
+auto socket_impl::read(uint8_t *buffer, const uint64_t len) const -> size_t {
     return ::read(_socket_fd, buffer, len);
 }
 
-auto socket::set_reuse_address(const bool val) const -> int {
+auto socket_impl::set_reuse_address(const bool val) const -> int {
     const int opt = val ? 1 : 0;
     return ::setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof opt);
 }
 
-auto socket::set_reuse_port(const bool val) const -> int {
+auto socket_impl::set_reuse_port(const bool val) const -> int {
     const int opt = val ? 1 : 0;
     return ::setsockopt(_socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof opt);
 }
 
-auto socket::set_non_blocking() const -> int {
+auto socket_impl::set_non_blocking() const -> int {
     return make_non_blocking(_socket_fd);
 }
 
-auto socket::get_fd() const -> int {
+auto socket_impl::get_fd() const -> int {
     return _socket_fd;
 }
 
-auto socket::close() const -> void {
+auto socket_impl::close() const -> void {
     logger::info("Closing... {}", _socket_fd);
     if (_socket_fd >= 0) {
         ::close(_socket_fd);
     }
 }
 
-socket::~socket() {
+socket_impl::~socket_impl() {
     logger::info("~socket {}", _socket_fd);
     close();
 }

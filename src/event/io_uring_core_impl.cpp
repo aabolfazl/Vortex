@@ -1,21 +1,21 @@
 /*
-* Copyright © 2024 Vortex project
-  *
-  * This is the source code of the Vortex project.
-  * It is licensed under the MIT License; you should have received a copy
-  * of the license in this archive (see LICENSE).
-  *
-  * Author: Abolfazl Abbasi
-  *
-  */
+ * Copyright © 2024 Vortex project
+ *
+ * This is the source code of the Vortex project.
+ * It is licensed under the MIT License; you should have received a copy
+ * of the license in this archive (see LICENSE).
+ *
+ * Author: Abolfazl Abbasi
+ *
+ */
 
 #include <cstring>
 #include <iostream>
 #include <stdexcept>
 
-#include "io_uring_core_impl.h"
 #include "../core/logger/logger.h"
-#include "core/interfaces/event/io_uring_socket.h"
+#include "io_uring_core_impl.h"
+
 
 namespace vortex::event {
 bool is_io_uring_supported() {
@@ -32,6 +32,7 @@ io_uring_core_impl::io_uring_core_impl(const uint32_t io_uring_size) {
     // if (use_submission_queue_polling) {
     //     flags |= IORING_SETUP_SQPOLL;
     // }
+    // i will iplement this later
     if (io_uring_queue_init(io_uring_size, &ring_, 0) != 0) {
         throw std::runtime_error("Failed to initialize io_uring");
     }
@@ -42,23 +43,27 @@ io_uring_core_impl::~io_uring_core_impl() {
     io_uring_queue_exit(&ring_);
 }
 
-auto io_uring_core_impl::prepare_accept(io_uring_socket &socket) noexcept -> io_uring_result {
-    if (socket.get_fd() <= 0) {
-        core::logger::error("Failed to prepare accept on socket {}", socket.get_fd());
+auto io_uring_core_impl::prepare_accept(event::accept_operation_ptr op) noexcept -> io_uring_result {
+    core::logger::info("Prepare accept on socket {}", op->fd);
+    if (op->fd <= 0) {
+        core::logger::error("Failed to prepare accept on socket {}", op->fd);
+        op->complete(-1);
         return io_uring_result::error;
     }
-
-    const auto request = new io_request(io_request::request_type::accept, socket);
-    const os_fd_t fd = socket.get_fd();
 
     const auto sqe = io_uring_get_sqe(&ring_);
 
     if (sqe == nullptr) {
+        op->complete(-1);
         return io_uring_result::error;
     }
 
-    io_uring_prep_accept(sqe, fd, reinterpret_cast<sockaddr *>(&client_addr_), &client_len_, 0);
-    io_uring_sqe_set_data(sqe, request);
+    io_uring_prep_accept(sqe, op->fd, reinterpret_cast<sockaddr *>(&client_addr_), &client_len_, 0);
+
+    uint64_t token = next_sqe_token_++;
+    io_uring_sqe_set_data64(sqe, token);
+
+    pending_ops_[token] = std::move(op);
 
     return io_uring_result::success;
 }
@@ -77,9 +82,8 @@ auto io_uring_core_impl::prepare_connect(const os_fd_t fd, const core::ipv4 &add
     return io_uring_result::success;
 }
 
-auto io_uring_core_impl::prepare_readv(const os_fd_t fd, const iovec *iovecs,
-                                       const unsigned nr_vecs, const off_t offset,
-                                       io_request *user_data) noexcept -> io_uring_result {
+auto io_uring_core_impl::prepare_readv(const os_fd_t fd, const iovec *iovecs, const unsigned nr_vecs,
+                                       const off_t offset, io_request *user_data) noexcept -> io_uring_result {
     io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
 
     if (sqe == nullptr) {
@@ -91,9 +95,8 @@ auto io_uring_core_impl::prepare_readv(const os_fd_t fd, const iovec *iovecs,
     return io_uring_result::success;
 }
 
-auto io_uring_core_impl::prepare_writev(const os_fd_t fd, const iovec *iovecs,
-                                        const unsigned nr_vecs, const off_t offset,
-                                        io_request *user_data) noexcept -> io_uring_result {
+auto io_uring_core_impl::prepare_writev(const os_fd_t fd, const iovec *iovecs, const unsigned nr_vecs,
+                                        const off_t offset, io_request *user_data) noexcept -> io_uring_result {
     io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
 
     if (sqe == nullptr) {
@@ -167,19 +170,28 @@ auto io_uring_core_impl::run() noexcept -> void {
 
             io_uring_for_each_cqe(&ring_, head, cqe) {
                 ++cqe_count;
-                auto *request = static_cast<io_request *>(io_uring_cqe_get_data(cqe));
-                if (request) {
-                    request = std::launder(request);
-                    switch (request->type()) {
-                    case io_request::request_type::accept:
-                        request->socket().on_accept(request, cqe->res);
-                        prepare_accept(request->socket());
-                        break;
-                    default:
-                        core::logger::error("Unknown request type");
-                        break;
+
+                uint64_t token = io_uring_cqe_get_data64(cqe);
+                core::logger::info("Got completion for token {}", token);
+
+                auto it = pending_ops_.find(token);
+
+                if (it == pending_ops_.end()) {
+                    core::logger::error("No pending operation found for token {}", token);
+                    return;
+                }
+
+
+                if (it != pending_ops_.end()) {
+                    if (it->second->type() == operation_type::accept) {
+                        auto accept_op =
+                            std::unique_ptr<accept_operation>(static_cast<accept_operation *>(it->second.release()));
+                        accept_op->complete(cqe->res);
+                        prepare_accept(std::move(accept_op));
+                    } else {
+                        it->second->complete(cqe->res);
+                        pending_ops_.erase(it);
                     }
-                    delete request;
                 }
             }
 
@@ -193,5 +205,9 @@ auto io_uring_core_impl::run() noexcept -> void {
 auto io_uring_core_impl::exit() noexcept -> void {
     core::logger::info("Exit io_uring_core_impl::exit");
     io_uring_queue_exit(&ring_);
+
+    for (auto &op : pending_ops_) {
+        op.second->complete(-1);
+    }
 }
-}
+} // namespace vortex::event

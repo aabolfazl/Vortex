@@ -14,7 +14,7 @@
 #include <thread>
 #include "tcp_server.h"
 
-#include "config/Config.h"
+#include "config/config.h"
 #include "connection_manager.h"
 #include "logger/logger.h"
 

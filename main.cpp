@@ -9,13 +9,13 @@
  *
  */
 
-#include "src/vortex_app.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include "src/vortex_app.h"
 
-int main(const int argc, char* argv[]) {
+int main(const int argc, char *argv[]) {
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <config-file-path>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <get_config-file-path>" << std::endl;
         return 1;
     }
 
