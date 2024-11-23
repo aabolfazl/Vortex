@@ -2,5 +2,7 @@
 /cmake-build-release-docker-host
 .cache
 /build
-compile_commands.json
 test/go/build
+.idea/
+.vscode/
+compile_commands.json

@@ -36,6 +36,15 @@ set(VORTEX_EVENT_MODULE
         event/io_uring_core_impl.h
 )
 
+set(VORTEX_CONFIG
+        core/config/config_loader.cpp
+        core/config/config_loader.h
+        core/config/config.cpp
+        core/config/config.h
+        core/config/parser/yaml_parser.cpp
+        core/config/parser/yaml_parser.h
+)
+
 add_library(vortex STATIC
         common/traits.h
 
@@ -43,16 +52,12 @@ add_library(vortex STATIC
         ${VORTEX_INTERFACE_HEADERS}
         # Event module
         ${VORTEX_EVENT_MODULE}
+        # config
+        ${VORTEX_CONFIG}
 
         # Core files
-        core/tcp_server.cpp
-        core/tcp_server.h
         core/process_manager.cpp
         core/process_manager.h
-        core/config/config_loader.cpp
-        core/config/config_loader.h
-        core/config/config.cpp
-        core/config/config.h
         core/connection_manager.cpp
         core/connection_manager.h
         core/logger/logger.h
@@ -67,12 +72,15 @@ add_library(vortex STATIC
         core/io/socket_io_handle_impl.h
         core/io/io_uring_dispacher_impl.cpp
         core/io/io_uring_dispacher_impl.h
+
+
 )
 
 
 target_include_directories(vortex PUBLIC
         ${Boost_INCLUDE_DIRS}
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${fmt_SOURCE_DIR}/include
 )
 
 target_link_libraries(vortex
