@@ -1,0 +1,70 @@
+# config.yaml
+
+runtime:
+  workers:
+    mode: "auto"
+    count: 0
+
+listeners:
+  - name: "main_listener"
+    ip: "0.0.0.0"
+    port: 8080
+    backend_cluster: "cluster_1"
+
+  - name: "api_listener"
+    ip: "0.0.0.0"
+    port: 8081
+    backend_cluster: "cluster_2"
+
+clusters:
+  - name: "cluster_1"
+    description: "Main application cluster"
+    load_balancing_strategy: "round_robin"
+    backends:
+      - ip: "192.168.1.103"
+        port: 8081
+        weight: 1
+        health_check:
+          interval: 30
+          timeout: 5
+          path: "/health"
+
+      - ip: "192.168.1.104"
+        name: "backend_2"
+        port: 8081
+        weight: 1
+        health_check:
+          interval: 30
+          timeout: 5
+          path: "/health"
+
+  - name: "cluster_2"
+    description: "Main services cluster 2"
+    load_balancing_strategy: "round_robin"
+    backends:
+      - ip: "192.168.1.103"
+        port: 8083
+        weight: 1
+        health_check:
+          interval: 20
+          timeout: 3
+          path: "/status"
+
+logging:
+  file: "/var/log/load_balancer.log"
+  level: "info"
+  rotation:
+    interval: "1d"
+
+timeouts:
+  connection: 60
+  read: 30
+  write: 30
+
+resource_limits:
+  max_connections: 10000
+  max_files: 1024
+
+buffers:
+  read_buffer_size: 8192
+  write_buffer_size: 8192

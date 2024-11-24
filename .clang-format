@@ -54,4 +54,6 @@ SpacesInConditionalStatement: false
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false
 TabWidth: 4
+PointerAlignment: Left
+ReferenceAlignment: Left
 ...

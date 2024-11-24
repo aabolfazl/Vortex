@@ -20,7 +20,6 @@
 #include <unistd.h>
 #include <vector>
 
-#include "config/config_loader.h"
 #include "logger/logger.h"
 
 namespace vortex::core {
@@ -56,7 +55,7 @@ void process_manager::create_workers() {
                 throw std::runtime_error("Environment variable 'config_file' is not set");
             }
 
-            auto cl = std::make_unique<config::config_loader>(configPath);
+            // auto cl = std::make_unique<config::config_loader>(configPath);
         }
     }
 
