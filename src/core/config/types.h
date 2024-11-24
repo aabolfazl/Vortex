@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <stdint.h>
 
 namespace vortex::core::config {
 
@@ -37,6 +38,19 @@ struct cluster_t {
     std::string desc;
     load_balancing_strategy_t load_balancing_strategy;
     std::vector<backend_t> backends;
+
+    auto load_balancing_strategy_to_string() const -> std::string {
+        switch (load_balancing_strategy) {
+            case load_balancing_strategy_t::round_robin:
+                return "round_robin";
+            case load_balancing_strategy_t::least_connections:
+                return "least_connections";
+            case load_balancing_strategy_t::ip_hash:
+                return "ip_hash";
+        }
+        
+        return "unknown";
+    }
 };
 
 struct listener_t {
@@ -75,22 +89,21 @@ struct buffers_t {
     int write_buffer_size;
 };
 
-struct worker_config_t {
+struct worker_t {
     enum class mode { Auto, Fixed };
 
     mode mode = mode::Auto;
     uint32_t count = 0;
 };
 
-struct runtime_config_t {
-    worker_config_t workers;
+struct runtime_t {
+    worker_t workers;
 };
 
 struct config_t {
-    runtime_config_t runtime;
+    runtime_t runtime;
     std::vector<listener_t> listeners;
     std::vector<cluster_t> clusters;
-    std::string load_balancing_strategy;
     logging_t logging;
     security_t security;
     timeouts_t timeouts;

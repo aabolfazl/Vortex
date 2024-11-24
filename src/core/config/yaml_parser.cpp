@@ -53,11 +53,11 @@ config_t yaml_parser::parse(const std::string& filepath) {
     }
 }
 
-auto yaml_parser::parse_runtime(const YAML::Node& node) const -> runtime_config_t {
-    runtime_config_t runtime;
+auto yaml_parser::parse_runtime(const YAML::Node& node) const -> runtime_t {
+    runtime_t runtime;
     if (node["workers"]) {
         const auto worker_mode_is_auto = node["workers"]["mode"].as<std::string>() == "auto";
-        runtime.workers.mode = worker_mode_is_auto ? worker_config_t::mode::Auto : worker_config_t::mode::Fixed;
+        runtime.workers.mode = worker_mode_is_auto ? worker_t::mode::Auto : worker_t::mode::Fixed;
         runtime.workers.count = worker_mode_is_auto ? 0 : node["workers"]["count"].as<uint32_t>();
     }
     return runtime;

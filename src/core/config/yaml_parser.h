@@ -24,7 +24,7 @@ public:
     config_t parse(const std::string& filepath) override;
 
 private:
-    auto parse_runtime(const YAML::Node& node) const -> runtime_config_t;
+    auto parse_runtime(const YAML::Node& node) const -> runtime_t;
     auto parse_listeners(const YAML::Node& node) const -> std::vector<listener_t>;
     auto parse_clusters(const YAML::Node& node) const -> std::vector<cluster_t>;
     auto parse_logging(const YAML::Node& node) const -> logging_t;

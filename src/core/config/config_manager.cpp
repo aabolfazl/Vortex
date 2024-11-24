@@ -21,16 +21,16 @@ void config_manager::load(const std::string& filepath, std::unique_ptr<parser_in
     config_ = parser->parse(filepath);
 }
 
+auto config_manager::runtime() const -> const runtime_t& {
+    return config_.runtime;
+}
+
 auto config_manager::listeners() const -> const std::vector<listener_t>& {
     return config_.listeners;
 }
 
 auto config_manager::clusters() const -> const std::vector<cluster_t>& {
     return config_.clusters;
-}
-
-auto config_manager::load_balancing_strategy() const -> const std::string& {
-    return config_.load_balancing_strategy;
 }
 
 auto config_manager::logging() const -> const logging_t& {

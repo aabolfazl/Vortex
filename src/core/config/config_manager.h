@@ -27,9 +27,9 @@ public:
 
     void load(const std::string& filepath, std::unique_ptr<parser_interface> parser);
 
+    auto runtime() const -> const runtime_t&;
     auto listeners() const -> const std::vector<listener_t>&;
     auto clusters() const -> const std::vector<cluster_t>&;
-    auto load_balancing_strategy() const -> const std::string&;
     auto logging() const -> const logging_t&;
     auto security() const -> const security_t&;
     auto timeouts() const -> const timeouts_t&;
