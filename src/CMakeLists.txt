@@ -61,10 +61,16 @@ set(VORTEX_COMMON
         common/platform.h
 )
 
-set(VORTEX_CORE
-        core/process_manager.cpp
-        core/process_manager.h
 
+
+set(VORTEX_LISTENER
+        core/listener/listener_manager.h
+)
+
+set(VORTEX_CORE
+        core/service_node.h
+        core/service_node.cpp
+        
         core/logger/logger.h
         core/io/socket_io_handle_impl.cpp
         core/io/socket_io_handle_impl.h
@@ -78,6 +84,7 @@ add_library(vortex STATIC
         ${VORTEX_CONFIG}
         ${VORTEX_COMMON}
         ${VORTEX_CORE}
+        ${VORTEX_LISTENER}
 )
 
 target_include_directories(vortex
