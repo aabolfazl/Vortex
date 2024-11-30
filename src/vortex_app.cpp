@@ -13,6 +13,7 @@
 #include "core/config/config_manager.h"
 #include "core/config/yaml_parser.h"
 #include "core/logger/logger.h"
+#include "core/service_node_impl.h"
 
 #include <cerrno>
 #include <cstring>
@@ -126,8 +127,8 @@ auto vortex_app::start_service_node() noexcept -> void {
     auto& config_mngr = core::config::config_manager::instance();
     config_mngr.load(config_path, std::make_unique<core::config::yaml_parser>());
 
-    auto app_node = std::make_unique<core::service_node>();
-    app_node->init(config_mngr);
+    auto app_node = std::make_unique<core::service_node_impl>();
+    app_node->init();
     app_node->start();
 }
 

@@ -33,6 +33,12 @@ Upon startup, a set of listening sockets is created, and each worker process con
 Non-blocking Event Loop
 The core of this architecture is an event loop that uses io_uring for high-performance I/O operations. Like NGINX, the goal is to avoid blocking operations. Workers are designed to remain highly responsive, waiting for network or I/O events to occur before processing them. The event loop processes tasks asynchronously, leveraging callbacks and fine-tuned timers to handle tasks efficiently without stalling.
 
+## future work
+- **L7 htto Load Balancing**: Extend the load balancer to support Layer 7 (HTTP) load balancing, including features like URL-based routing, header-based routing, and SSL termination.
+- **Dynamic Configuration**: Support dynamic configuration updates without requiring a restart of the load balancer.
+- **Monitoring**: Integrate monitoring capabilities to track performance metrics and diagnose issues.
+- **Traffic Routing for A/B Testing**: Implement a feature to route a certain percentage of traffic to a new version of the service for A/B testing or canary deployments.
+
 ## License
 
 MIT

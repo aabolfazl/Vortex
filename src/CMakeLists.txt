@@ -61,16 +61,21 @@ set(VORTEX_COMMON
         common/platform.h
 )
 
-
+set(VORTEX_BALANCER
+        core/balancer/cluster_manager_impl.h
+        core/balancer/cluster_manager_impl.cpp
+)
 
 set(VORTEX_LISTENER
         core/listener/listener_manager.h
 )
 
 set(VORTEX_CORE
-        core/service_node.h
-        core/service_node.cpp
-        
+        core/service_node_impl.h
+        core/service_node_impl.cpp
+        core/components_factory_impl.h
+        core/components_factory_impl.cpp
+
         core/logger/logger.h
         core/io/socket_io_handle_impl.cpp
         core/io/socket_io_handle_impl.h
@@ -85,6 +90,7 @@ add_library(vortex STATIC
         ${VORTEX_COMMON}
         ${VORTEX_CORE}
         ${VORTEX_LISTENER}
+        ${VORTEX_BALANCER}
 )
 
 target_include_directories(vortex

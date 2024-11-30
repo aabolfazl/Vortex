@@ -14,7 +14,6 @@
 #include <memory>
 
 #include "core/config/types.h"
-#include "core/service_node.h"
 
 namespace vortex {
 class vortex_app {
