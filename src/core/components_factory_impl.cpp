@@ -13,11 +13,11 @@
 #include "components_factory_impl.h"
 #include "core/balancer/cluster_manager_impl.h"
 
-
 #include <memory>
 
 namespace vortex::core {
-auto components_factory_impl::create_cluster_manager() -> cluster_manager_ptr {
-    return std::make_shared<cluster_manager_impl>();
+auto components_factory_impl::create_cluster_manager(event::dispatcher_ptr dispatcher) -> cluster_manager_ptr {
+    return std::make_shared<cluster_manager_impl>(dispatcher);
 }
+
 } // namespace vortex::core

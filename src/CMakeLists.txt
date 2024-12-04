@@ -64,6 +64,10 @@ set(VORTEX_COMMON
 set(VORTEX_BALANCER
         core/balancer/cluster_manager_impl.h
         core/balancer/cluster_manager_impl.cpp
+        core/balancer/cluster_impl.h
+        core/balancer/cluster_impl.cpp
+        core/balancer/backend_impl.h
+        core/balancer/backend_impl.cpp
 )
 
 set(VORTEX_LISTENER

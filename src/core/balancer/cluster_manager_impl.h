@@ -12,13 +12,29 @@
 #pragma once
 
 #include "core/interfaces/cluster.h"
+#include "core/interfaces/event/dispatcher.h"
 
 namespace vortex::core {
 
 class cluster_manager_impl final : public cluster_manager {
 
+/*
+*   ClusterManager is a class that manages the clusters.
+*   It has a map of clusters and can add, remove and get clusters.
+*   It also has an initialize method that initializes the cluster manager.
+*   The cluster manager is responsible for initializing the clusters.
+*
+*   ClusterManager
+*       ├─ Cluster "web_cluster"
+*       │   ├─ Backend1 (with connection pool)
+*       │   └─ Backend2 (with connection pool)
+*       └─ Cluster "api_cluster"
+*           ├─ Backend3 (with connection pool)
+*           └─ Backend4 (with connection pool)
+*/
+
 public:
-    explicit cluster_manager_impl();
+    explicit cluster_manager_impl(event::dispatcher_ptr dispatcher);
     virtual ~cluster_manager_impl();
     auto initialize(config::config_manager&) -> void override;
     auto is_initialized() -> bool override;
@@ -29,7 +45,10 @@ public:
     auto get_cluster() -> void override;
 
 private:
+    event::dispatcher_ptr dispatcher_;
+
     bool initialized_;
+    initialized_callback initialize_callback_;
 };
 
 } // namespace vortex::core

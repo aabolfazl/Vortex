@@ -10,16 +10,28 @@
  */
 
 #include "cluster_manager_impl.h"
+#include "cluster_impl.h"
+#include "core/config/types.h"
 #include "core/logger/logger.h"
 
 namespace vortex::core {
 
-cluster_manager_impl::cluster_manager_impl(): initialized_(false) {
+cluster_manager_impl::cluster_manager_impl(event::dispatcher_ptr dispatcher) :
+    dispatcher_(dispatcher), initialized_(false) {
     logger::info("Cluster manager created");
 }
 
 auto cluster_manager_impl::initialize(config::config_manager& cnfig_mngr) -> void {
     logger::info("Cluster manager initialized");
+    initialized_ = true;
+
+    for (const auto& cluster_t : cnfig_mngr.clusters()) {
+        clusters_.push_back(cluster_t);
+
+        auto cluster_ptr = std::make_unique<cluster_impl>(dispatcher_, cluster_t);
+        cluster_ptr->initialize();
+        clusters_map_[cluster_t.name] = std::move(cluster_ptr);
+    }
 }
 
 auto cluster_manager_impl::is_initialized() -> bool {
