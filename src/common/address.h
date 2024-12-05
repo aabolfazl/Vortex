@@ -13,6 +13,7 @@
 
 #include <netinet/in.h>
 #include <string>
+#include <memory>
 
 #include "traits.h"
 
@@ -32,4 +33,6 @@ private:
     std::string ip_address_;
     uint16_t port_;
 };
+using ipv4_ptr = std::shared_ptr<ipv4>;
+
 } // namespace vortex::core

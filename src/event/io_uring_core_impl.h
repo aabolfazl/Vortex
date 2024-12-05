@@ -35,10 +35,9 @@ public:
 
     // imlemented in new structure
     auto prepare_accept(event::accept_operation_ptr op) noexcept -> io_uring_result override;
+    auto prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result override;
 
 
-    auto prepare_connect(os_fd_t fd, const core::ipv4 &address,
-                         io_request *user_data) noexcept -> io_uring_result override;
     auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
                        io_request *user_data) noexcept -> io_uring_result override;
     auto prepare_writev(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,

@@ -25,7 +25,10 @@ class dispatcher : public traits::non_copyable<dispatcher>, public traits::non_m
 public:
     virtual ~dispatcher() = default;
 
-    virtual void submit_async_accept(accept_operation_ptr op) = 0;
+    virtual auto submit_async_accept(accept_operation_ptr op) -> void = 0;
+    virtual auto submit_async_connect(connect_operation_ptr op) -> void = 0;
+
+    
     virtual auto loop() -> void = 0;
 
     // virtual auto create_timer(int timeout, const std::function<void()> &callback) -> void;

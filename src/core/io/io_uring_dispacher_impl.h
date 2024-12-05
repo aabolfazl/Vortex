@@ -25,7 +25,8 @@ public:
     explicit io_uring_dispacher_impl();
     virtual ~io_uring_dispacher_impl();
     // auto create_network_event() -> event::async_network_event_ptr override;
-    void submit_async_accept(event::accept_operation_ptr op) override;
+    auto submit_async_accept(event::accept_operation_ptr op) -> void override;
+    auto submit_async_connect(event::connect_operation_ptr op) -> void override;
 
     auto loop() -> void override;
 
