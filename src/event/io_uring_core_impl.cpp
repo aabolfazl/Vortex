@@ -68,16 +68,23 @@ auto io_uring_core_impl::prepare_accept(event::accept_operation_ptr op) noexcept
     return io_uring_result::success;
 }
 
-auto io_uring_core_impl::prepare_connect(const os_fd_t fd, const core::ipv4 &address,
-                                         io_request *user_data) noexcept -> io_uring_result {
-
+auto io_uring_core_impl::prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result {
+    core::logger::info("Prepare connect on socket {} address {} port {}", op_ptr->fd_, op_ptr->address_->to_string(),
+                       op_ptr->address_->get_port());
+                       
     io_uring_sqe *sqe = io_uring_get_sqe(&ring_);
     if (sqe == nullptr) {
+        core::logger::error("Failed to get sqe for connect operation");
+        op_ptr->complete(-1);
         return io_uring_result::error;
     }
 
-    io_uring_prep_connect(sqe, fd, address.get_sock_addr(), core::ipv4::sock_addr_len());
-    io_uring_sqe_set_data(sqe, user_data);
+    io_uring_prep_connect(sqe, op_ptr->fd_, op_ptr->address_->get_sock_addr(), core::ipv4::sock_addr_len());
+
+    uint64_t token = next_sqe_token_++;
+    io_uring_sqe_set_data64(sqe, token);
+
+    pending_ops_[token] = std::move(op_ptr);
 
     return io_uring_result::success;
 }
@@ -189,6 +196,7 @@ auto io_uring_core_impl::run() noexcept -> void {
                         accept_op->complete(cqe->res);
                         prepare_accept(std::move(accept_op));
                     } else {
+                        core::logger::info("Completing operation for token {} type {}", token, it->second->type_str());
                         it->second->complete(cqe->res);
                         pending_ops_.erase(it);
                     }

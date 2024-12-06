@@ -16,9 +16,7 @@
 
 namespace vortex::core {
 
-ipv4::ipv4(const std::string &ip_address, const uint16_t port) :
-    ip_address_(ip_address),
-    port_(port) {
+ipv4::ipv4(const std::string& ip_address, const uint16_t port) : ip_address_(ip_address), port_(port) {
 
     memset(&addr_, 0, sizeof(addr_));
     addr_.sin_family = AF_INET;
@@ -26,11 +24,13 @@ ipv4::ipv4(const std::string &ip_address, const uint16_t port) :
     inet_pton(AF_INET, ip_address_.c_str(), &addr_.sin_addr);
 }
 
-auto ipv4::get_sock_addr() const noexcept -> const sockaddr * {
-    return reinterpret_cast<const sockaddr *>(addr_.sin_addr.s_addr);
+auto ipv4::get_sock_addr() const noexcept -> const sockaddr* {
+    return reinterpret_cast<const sockaddr*>(&addr_);
 }
 
-auto ipv4::sock_addr_len() noexcept -> socklen_t { return sizeof(sockaddr_in); }
+auto ipv4::sock_addr_len() noexcept -> socklen_t {
+    return sizeof(sockaddr_in);
+}
 
 auto ipv4::to_string() const noexcept -> std::string {
     return ip_address_;

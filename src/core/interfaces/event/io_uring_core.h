@@ -22,8 +22,7 @@ public:
     virtual ~io_uring_core() = default;
 
     virtual auto prepare_accept(event::accept_operation_ptr ptr) noexcept -> io_uring_result = 0;
-    virtual auto prepare_connect(os_fd_t fd, const core::ipv4 &address,
-                                 io_request *user_data) noexcept -> io_uring_result = 0;
+    virtual auto prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result = 0;
     virtual auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
                                io_request *user_data) noexcept -> io_uring_result = 0;
     virtual auto prepare_writev(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
