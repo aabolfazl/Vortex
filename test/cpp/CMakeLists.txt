@@ -12,7 +12,7 @@ fetchcontent_makeavailable(googletest)
 enable_testing()
 
 add_executable(vortex_tests
-    listener/listener_test.cpp
+    event/event_test.cpp
 )
 
 target_link_libraries(vortex_tests
