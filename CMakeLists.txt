@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
 project(Vortex)
+
+include(CTest)
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_subdirectory(src)
-# add_subdirectory(test/cpp)
+add_subdirectory(test/cpp)
 
 add_executable(Vortex main.cpp
         src/vortex_app.cpp
