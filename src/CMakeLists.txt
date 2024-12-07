@@ -7,13 +7,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
-FetchContent_Declare(
+include(CTest)
+enable_testing()
+
+fetchcontent_declare(
         fmt
         GIT_REPOSITORY https://github.com/fmtlib/fmt.git
         GIT_TAG 11.0.2
 )
 
-FetchContent_Declare(
+fetchcontent_declare(
         yaml-cpp
         GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
         GIT_TAG yaml-cpp-0.7.0 # Using a known good version
@@ -24,7 +27,7 @@ set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "disable yaml-cpp tools")
 set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "disable yaml-cpp contrib")
 set(YAML_CPP_INSTALL OFF CACHE BOOL "disable yaml-cpp install")
 
-FetchContent_MakeAvailable(fmt yaml-cpp)
+fetchcontent_makeavailable(fmt yaml-cpp)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(URING REQUIRED liburing)
