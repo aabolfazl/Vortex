@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 env:
-  BUILD_TYPE: Debug  # Changed to Debug for coverage
+  BUILD_TYPE: Release
 
 jobs:
   build-and-test:
@@ -19,7 +19,7 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake build-essential lcov gcovr
+        sudo apt-get install -y cmake build-essential
         
     - name: Build and Install liburing
       run: |
@@ -36,14 +36,6 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j$(nproc)
 
-    - name: Test with Coverage
+    - name: Test
       working-directory: ${{github.workspace}}/build
-      run: |
-        ctest -C ${{env.BUILD_TYPE}} --output-on-failure --verbose
-        gcovr -r .. --xml coverage.xml
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./build/coverage.xml
-        fail_ci_if_error: true
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure --verbose
