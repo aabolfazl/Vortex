@@ -17,9 +17,9 @@
 #include <netinet/in.h>
 #include <unordered_map>
 #include "common/platform.h"
-#include "core/interfaces/event/async_event.h"
-#include "core/interfaces/event/io_uring.h"
-#include "core/interfaces/event/io_uring_core.h"
+#include "vortex/event/async_event.h"
+#include "vortex/event/io_uring.h"
+#include "vortex/event/io_uring_core.h"
 #include "liburing.h"
 
 namespace vortex::event {

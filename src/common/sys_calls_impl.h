@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "core/interfaces/sys_calls.h"
+#include "vortex/sys_calls.h"
 
 namespace vortex::api {
 class sys_calls_impl : public sys_calls {

@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "core/interfaces/cluster.h"
-#include "core/interfaces/event/dispatcher.h"
-#include "core/interfaces/service_node.h"
+#include "cluster.h"
+#include "vortex/event/dispatcher.h"
+#include "common/traits.h"
 
 namespace vortex::core {
 

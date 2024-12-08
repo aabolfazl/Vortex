@@ -16,7 +16,7 @@
 #include <unordered_map>
 #include "common/platform.h"
 #include "common/traits.h"
-#include "core/interfaces/event/async_event.h"
+#include "vortex/event/async_event.h"
 
 namespace vortex::event {
 

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "core/interfaces/event/io_uring_core.h"
+#include "vortex/event/io_uring_core.h"
 
 namespace vortex::test {
 

@@ -16,10 +16,10 @@
 
 #include "common/traits.h"
 #include "core/config/config_manager.h"
-#include "core/interfaces/service_node.h"
 #include "core/io/io_uring_dispacher_impl.h"
-#include "core/interfaces/components_factory.h"
-#include "core/interfaces/cluster.h"
+#include "vortex/balancer/cluster.h"
+#include "vortex/balancer/components_factory.h"
+#include "vortex/service_node.h"
 
 
 namespace vortex::core {
