@@ -16,6 +16,8 @@
 #include <chrono>
 #include <fmt/chrono.h>
 #include <fmt/format.h>
+#include <unistd.h>
+#include <iostream>
 
 namespace vortex::core {
 class logger {
@@ -34,12 +36,13 @@ public:
 
 private:
     template <typename... Args>
-    static void log(const log_level level, const char *format, Args &&...args) {
+    static void log(const log_level level, const char* format, Args&&... args) {
         const auto now = std::chrono::system_clock::now();
         const auto time = std::chrono::system_clock::to_time_t(now);
 
         fmt::memory_buffer buffer;
-        fmt::format_to(std::back_inserter(buffer), "{:%Y-%m-%d %H:%M:%S} {} ", *std::localtime(&time), log_level_to_string(level));
+        fmt::format_to(std::back_inserter(buffer), "{:%Y-%m-%d %H:%M:%S} {} {} ", *std::localtime(&time), getpid(),
+                       log_level_to_string(level));
 
         fmt::format_to(std::back_inserter(buffer), format, std::forward<Args>(args)...);
         fmt::format_to(std::back_inserter(buffer), "\n");
@@ -56,7 +59,7 @@ private:
         fmt::print("{}{}{}", color_code, fmt::to_string(buffer), "\033[0m");
     }
 
-    static const char *log_level_to_string(const log_level level) {
+    static const char* log_level_to_string(const log_level level) {
         switch (level) {
         case log_level::info:
             return "I";
