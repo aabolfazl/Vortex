@@ -82,7 +82,7 @@ public:
     core::ipv4_ptr address_;
 
     explicit connect_operation(os_fd_t fd, core::ipv4_ptr address, std::function<void(int)> cb) :
-        fd_(fd), callback_(std::move(cb)), address_(address) {
+        fd_(fd), callback_(std::move(cb)), address_(std::move(address)) {
     }
 
     void complete(int result) override {

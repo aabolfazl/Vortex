@@ -32,23 +32,21 @@ public:
     enum class health { healthy, unhealthy };
 
     virtual ~backend() = default;
-    virtual auto get_status() -> status = 0;
-    virtual auto get_type() -> type = 0;
-    virtual auto get_connection_state() -> connection_state = 0;
-    virtual auto get_health() -> health = 0;
-    virtual auto get_name() -> std::string = 0;
-    virtual auto get_address() -> std::string = 0;
-    virtual auto get_port() -> uint16_t = 0;
-    virtual auto get_weight() -> uint16_t = 0;
-    virtual auto get_max_connections() -> uint16_t = 0;
-    virtual auto get_current_connections() -> uint16_t = 0;
+    // virtual auto get_status() -> status = 0;
+    // virtual auto get_type() -> type = 0;
+    // virtual auto get_connection_state() -> connection_state = 0;
+    // virtual auto get_health() -> health = 0;
+    // virtual auto get_name() -> std::string = 0;
+    // virtual auto get_weight() -> uint16_t = 0;
+    // virtual auto get_max_connections() -> uint16_t = 0;
+    // virtual auto get_current_connections() -> uint16_t = 0;
 
-    virtual auto set_status(status status) -> void = 0;
-    virtual auto set_connection_state(connection_state state) -> void = 0;
-    virtual auto set_health(health health) -> void = 0;
-    virtual auto set_weight(uint16_t weight) -> void = 0;
-    virtual auto set_max_connections(uint16_t max_connections) -> void = 0;
-    virtual auto set_current_connections(uint16_t current_connections) -> void = 0;
+    // virtual auto set_status(status status) -> void = 0;
+    // virtual auto set_connection_state(connection_state state) -> void = 0;
+    // virtual auto set_health(health health) -> void = 0;
+    // virtual auto set_weight(uint16_t weight) -> void = 0;
+    // virtual auto set_max_connections(uint16_t max_connections) -> void = 0;
+    // virtual auto set_current_connections(uint16_t current_connections) -> void = 0;
 
     virtual auto connect() -> void = 0;
     virtual auto disconnect() -> void = 0;

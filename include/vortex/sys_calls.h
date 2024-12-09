@@ -66,7 +66,6 @@ public:
     }
 
     int result() const {
-        core::logger::info("Result is {}", ret_);
         return ret_;
     }
 
@@ -80,7 +79,7 @@ public:
 
 private:
     sys_call_result(bool succeeded, int ret, int errno_value) : succeeded_(succeeded), ret_(ret), errno_(errno_value) {
-        core::logger::info("Sys call result created with success: {}, ret: {}, errno: {}", succeeded_, ret_, errno_);
+
     }
 
     bool succeeded_;
