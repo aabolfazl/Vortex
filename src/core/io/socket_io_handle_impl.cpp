@@ -52,7 +52,6 @@ int socket_io_handle_impl::fd() const {
 }
 
 api::sys_call_result socket_io_handle_impl::set_blocking(bool blocking) {
-    core::logger::info("Setting blocking to {}", blocking);
     return api::sys_calls_impl::instance().set_blocking(fd_, blocking);
 }
 

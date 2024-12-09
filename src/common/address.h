@@ -11,18 +11,18 @@
 
 #pragma once
 
+#include <memory>
 #include <netinet/in.h>
 #include <string>
-#include <memory>
 
 #include "traits.h"
 
 namespace vortex::core {
-class ipv4 : traits::non_copyable<ipv4>, traits::non_moveable<ipv4> {
+class ipv4 : traits::non_copyable<ipv4> {
 public:
-    explicit ipv4(const std::string &ip_address, uint16_t port = 8080);
+    explicit ipv4(const std::string& ip_address, uint16_t port = 8080);
 
-    auto get_sock_addr() const noexcept -> const sockaddr *;
+    auto get_sock_addr() const noexcept -> const sockaddr*;
     static auto sock_addr_len() noexcept -> socklen_t;
     auto to_string() const noexcept -> std::string;
 

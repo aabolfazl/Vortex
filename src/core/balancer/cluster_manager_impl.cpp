@@ -16,7 +16,7 @@
 
 namespace vortex::core {
 
-cluster_manager_impl::cluster_manager_impl(event::dispatcher_ptr dispatcher) :
+cluster_manager_impl::cluster_manager_impl(event::dispatcher& dispatcher) :
     dispatcher_(dispatcher), initialized_(false) {
     logger::info("Cluster manager created");
 }
@@ -28,7 +28,7 @@ auto cluster_manager_impl::initialize(config::config_manager& cnfig_mngr) -> voi
     for (const auto& cluster_t : cnfig_mngr.clusters()) {
         clusters_.push_back(cluster_t);
 
-        auto cluster_ptr = std::make_unique<cluster_impl>(dispatcher_, cluster_t);
+        auto cluster_ptr = std::make_unique<cluster_impl>(dispatcher_, cluster_t, cnfig_mngr.resource_limits());
         cluster_ptr->initialize();
         clusters_map_[cluster_t.name] = std::move(cluster_ptr);
     }

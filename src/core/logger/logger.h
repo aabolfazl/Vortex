@@ -16,13 +16,13 @@
 #include <chrono>
 #include <fmt/chrono.h>
 #include <fmt/format.h>
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 namespace vortex::core {
 class logger {
 public:
-    enum class log_level { info, error };
+    enum class log_level { info, error, warning, debug };
 
     template <typename... Args>
     static void info(const char* format, Args&&... args) {
@@ -32,6 +32,16 @@ public:
     template <typename... Args>
     static void error(const char* format, Args&&... args) {
         log(log_level::error, format, std::forward<Args>(args)...);
+    }
+
+    template <typename... Args>
+    static void warning(const char* format, Args&&... args) {
+        log(log_level::warning, format, std::forward<Args>(args)...);
+    }
+
+    template <typename... Args>
+    static void debug(const char* format, Args&&... args) {
+        log(log_level::debug, format, std::forward<Args>(args)...);
     }
 
 private:
@@ -48,12 +58,20 @@ private:
         fmt::format_to(std::back_inserter(buffer), "\n");
 
         std::string color_code;
-        if (level == log_level::info) {
-            color_code = "\033[34m";
-        } else if (level == log_level::error) {
+        switch (level) {
+
+        case log_level::error:
             color_code = "\033[31m";
-        } else {
+            break;
+        case log_level::warning:
+            color_code = "\033[33;1m";
+            break;
+        case log_level::debug:
+            color_code = "\033[36m";
+            break;
+        default:
             color_code = "\033[0m";
+            break;
         }
 
         fmt::print("{}{}{}", color_code, fmt::to_string(buffer), "\033[0m");
@@ -64,6 +82,10 @@ private:
         case log_level::info:
             return "I";
         case log_level::error:
+            return "E";
+        case log_level::warning:
+            return "W";
+        case log_level::debug:
             return "D";
         default:
             return "UNKNOWN";

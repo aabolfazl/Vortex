@@ -19,7 +19,8 @@ namespace vortex::core {
 
 class cluster_impl final : public cluster {
 public:
-    explicit cluster_impl(event::dispatcher_ptr distpatcher,const config::cluster_t& cluster_t);
+    explicit cluster_impl(event::dispatcher& distpatcher, const config::cluster_t& cluster_t,
+                          const config::resource_limits_t& resource_limits);
     virtual ~cluster_impl();
     auto initialize() -> void override;
     auto is_initialized() -> bool override;
@@ -28,7 +29,7 @@ public:
     auto set_initialize_callback(initialized_callback callback) -> void override;
 
 private:
-    event::dispatcher_ptr dispatcher_;
+    event::dispatcher& dispatcher_;
 
     std::string name_;
     std::string description_;
@@ -37,6 +38,7 @@ private:
 
     std::vector<backend_ptr> backends_;
     const config::cluster_t& cluster_t_;
+    const config::resource_limits_t resource_limits_;
 };
 
 } // namespace vortex::core

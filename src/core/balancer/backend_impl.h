@@ -14,30 +14,14 @@
 #include "core/config/types.h"
 #include "vortex/balancer/cluster.h"
 #include "vortex/event/dispatcher.h"
+#include "vortex/net/tcp_connection_pool.h"
 
 namespace vortex::core {
 class backend_impl final : public backend {
 public:
-    explicit backend_impl(event::dispatcher_ptr dispatcher, const config::backend_t& backend_t);
+    explicit backend_impl(event::dispatcher& dispatcher, const config::backend_t& backend_t,
+                          const core::config::resource_limits_t& resource_limits_t);
     virtual ~backend_impl();
-
-    auto get_status() -> status override;
-    auto get_type() -> type override;
-    auto get_connection_state() -> connection_state override;
-    auto get_health() -> health override;
-    auto get_name() -> std::string override;
-    auto get_address() -> std::string override;
-    auto get_port() -> uint16_t override;
-    auto get_weight() -> uint16_t override;
-    auto get_max_connections() -> uint16_t override;
-    auto get_current_connections() -> uint16_t override;
-
-    auto set_status(status status) -> void override;
-    auto set_connection_state(connection_state state) -> void override;
-    auto set_health(health health) -> void override;
-    auto set_weight(uint16_t weight) -> void override;
-    auto set_max_connections(uint16_t max_connections) -> void override;
-    auto set_current_connections(uint16_t current_connections) -> void override;
 
     auto connect() -> void override;
     auto disconnect() -> void override;
@@ -46,14 +30,12 @@ public:
     auto on_disconnect() -> void override;
 
 private:
-    event::dispatcher_ptr dispatcher_;
-
+    event::dispatcher& dispatcher_;
+    network::tcp_conn_pool_ptr connection_pool_;
+    ipv4_ptr address_;
     std::string name_;
-    std::string address_;
-    uint16_t port_;
     uint16_t weight_;
     uint16_t max_connections_;
-    uint16_t current_connections_;
     status status_;
     type type_;
     connection_state connection_state_;
