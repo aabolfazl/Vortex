@@ -21,6 +21,15 @@ namespace vortex::core::network {
 using ms = std::chrono::milliseconds;
 using us = std::chrono::microseconds;
 
+enum class connection_event { connected, closed, error };
+
+class connection_callback{
+public:
+    virtual ~connection_callback() = default;
+
+   virtual auto on_event(connection_event) -> void = 0;
+};
+
 class connection : public traits::non_copyable<connection>, public traits::non_moveable<connection> {
 public:
     enum class connection_state { open, opeening, closing, closed };
@@ -33,6 +42,8 @@ public:
     virtual auto state() const -> connection_state = 0;
 
     virtual auto id() const -> uint64_t = 0;
+
+    virtual auto set_coonecrion_callback(connection_callback& callback) -> void = 0;
 };
 using connection_ptr = std::shared_ptr<connection>;
 

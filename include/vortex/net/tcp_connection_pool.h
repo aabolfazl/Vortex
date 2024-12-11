@@ -31,18 +31,14 @@ class tcp_connection_pool : public traits::non_copyable<tcp_connection_pool>,
 
 public:
     virtual ~tcp_connection_pool() = default;
-    virtual auto acquire_connection() noexcept -> op_connection_ref = 0;
-    virtual auto release_connection(client_connection_ptr& connection) noexcept -> void = 0;
 
-    virtual auto connect_all() const noexcept -> void = 0;
-
-    virtual auto connections_count() const noexcept -> size_t = 0;
-    virtual auto max_connections() const noexcept -> size_t = 0;
+    virtual auto connect_all() noexcept -> void = 0;
+    
     virtual auto set_max_connections(size_t max_connections) noexcept -> void = 0;
 
     virtual auto set_initilized_callback(initilized_callback callback) noexcept -> void = 0;
 
-    using connections = std::vector<client_connection_ptr>;
+    virtual auto dispatcher() const noexcept -> event::dispatcher& = 0;
 
 private:
     virtual auto add_connection() noexcept -> void = 0;
