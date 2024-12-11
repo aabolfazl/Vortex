@@ -32,6 +32,8 @@ public:
     auto state() const -> connection_state override;
 
     auto id() const -> uint64_t override;
+    
+    auto set_coonecrion_callback(connection_callback& callback) -> void override;
 
     ~client_connection_impl() override;
 
@@ -41,6 +43,9 @@ private:
     ipv4_ptr address_ptr_;
     connection_state state_{connection_state::closed};
     uint64_t id_;
+    connection_callback* callback_;
+
+    auto set_state(connection_state state) -> void;
 
     auto on_connect_result(int result) noexcept -> void;
 };

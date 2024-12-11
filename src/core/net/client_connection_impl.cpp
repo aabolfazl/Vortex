@@ -24,7 +24,7 @@ auto client_connection_impl::connect() -> void {
         return;
     }
 
-    state_ = connection_state::opeening;
+    set_state(connection_state::opeening);
 
     auto connect_op = std::make_unique<event::connect_operation>(io_handle_ptr_->fd(), address_ptr_, [this](int result)
                                                                  { this->on_connect_result(result); });
@@ -33,13 +33,27 @@ auto client_connection_impl::connect() -> void {
     logger::info("Connection to address {} submitted", address_ptr_->to_string());
 }
 
+auto client_connection_impl::set_coonecrion_callback(connection_callback& callback) -> void {
+    callback_ = &callback;
+}
+
+auto client_connection_impl::set_state(connection_state state) -> void {
+    state_ = state;
+
+    if (callback_ && state == connection_state::open) {
+        callback_->on_event(connection_event::connected);
+    } else if (callback_ && state == connection_state::closed) {
+        callback_->on_event(connection_event::closed);
+    }
+}
+
 auto client_connection_impl::on_connect_result(int result) noexcept -> void {
     core::logger::error("Connect result {}", result);
 
     if (result == 0) {
-        state_ = connection_state::open;
+        set_state(connection_state::open);
     } else {
-        state_ = connection_state::closed;
+        set_state(connection_state::closed);
     }
 }
 
@@ -48,7 +62,7 @@ auto client_connection_impl::close() -> void {
     if (state_ == connection_state::closed) {
         return;
     }
-    state_ = connection_state::closed;
+    set_state(connection_state::closed);
     io_handle_ptr_->close();
 }
 
@@ -65,7 +79,6 @@ auto client_connection_impl::id() const -> uint64_t {
 }
 
 client_connection_impl::~client_connection_impl() {
-    
 }
 
 
