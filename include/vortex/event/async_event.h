@@ -16,6 +16,7 @@
 #include <memory>
 #include "common/address.h"
 #include "common/platform.h"
+#include "core/logger/logger.h"
 
 
 namespace vortex::event {
@@ -83,6 +84,7 @@ public:
 
     explicit connect_operation(os_fd_t fd, core::ipv4_ptr address, std::function<void(int)> cb) :
         fd_(fd), callback_(std::move(cb)), address_(std::move(address)) {
+        LOG_I("connect_operation created with fd: {} address: {}", fd_, address_->to_string());
     }
 
     void complete(int result) override {
@@ -94,5 +96,28 @@ public:
     }
 };
 using connect_operation_ptr = std::unique_ptr<connect_operation>;
+
+class read_operation : public io_operation {
+public:
+    std::function<void(int)> callback_;
+    os_fd_t fd_ = 0;
+    // it will be replaced with buffer class in the future
+    void* buffer_ = nullptr;
+    size_t size_ = 0;
+
+    explicit read_operation(os_fd_t fd, void* buffer, size_t size, std::function<void(int)> cb) :
+        fd_(fd), buffer_(buffer), size_(size), callback_(std::move(cb)) {
+        LOG_I("read_operation created with fd: {} size: {}", fd_, static_cast<int>(size_));
+    }
+
+    void complete(int result) override {
+        callback_(result);
+    }
+
+    operation_type type() const override {
+        return operation_type::read;
+    }
+};
+using read_operation_ptr = std::unique_ptr<read_operation>;
 
 } // namespace vortex::event
