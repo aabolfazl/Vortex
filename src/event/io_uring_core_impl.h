@@ -37,7 +37,7 @@ public:
     auto prepare_accept(event::accept_operation_ptr op) noexcept -> io_uring_result override;
     auto prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result override;
 
-    auto prepare_recv(event::read_operation_ptr opt_ptr) noexcept -> io_uring_result override;
+    auto prepare_recv(event::recv_operation_ptr opt_ptr) noexcept -> io_uring_result override;
 
     auto submit() noexcept -> io_uring_result override;
     auto run() noexcept -> void override;

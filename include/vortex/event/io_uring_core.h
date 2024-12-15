@@ -23,7 +23,7 @@ public:
 
     virtual auto prepare_accept(event::accept_operation_ptr ptr) noexcept -> io_uring_result = 0;
     virtual auto prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result = 0;
-    virtual auto prepare_recv(event::read_operation_ptr opt_ptr) noexcept -> io_uring_result = 0;
+    virtual auto prepare_recv(event::recv_operation_ptr opt_ptr) noexcept -> io_uring_result = 0;
 
     virtual auto submit() noexcept -> io_uring_result = 0;
     virtual auto run() noexcept -> void = 0;

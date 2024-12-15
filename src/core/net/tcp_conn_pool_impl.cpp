@@ -17,7 +17,7 @@
 
 namespace vortex::core::network {
 
-tcp_client_impl::tcp_client_impl(tcp_conn_pool_impl& conn_pool, ipv4_ptr address) :conn_pool_(conn_pool) {
+tcp_client_impl::tcp_client_impl(tcp_conn_pool_impl& conn_pool, ipv4_ptr address) : conn_pool_(conn_pool) {
     // todo: implement factory registery for all factories
     auto conn_factory = std::make_unique<connection_factory_impl>();
     auto con = conn_factory->create_tcp_connection(conn_pool.dispatcher(), address);
@@ -30,44 +30,33 @@ auto tcp_client_impl::on_event(connection_event event) noexcept -> void {
     conn_pool_.on_coonection_event(*this, event);
 }
 
-tcp_client_impl::~tcp_client_impl() {}
+tcp_client_impl::~tcp_client_impl() {
+}
 
 tcp_conn_pool_impl::tcp_conn_pool_impl(event::dispatcher& dispatcher, ipv4_ptr address, size_t max_connections) :
     dispatcher_(dispatcher), address_(address), max_connections_(max_connections) {
-
-    // start idle connection timer
-    // start_idle_connection_timer();
-
     LOG_I("Created connection pool with {} connections", max_connections);
 }
 
 auto tcp_conn_pool_impl::on_coonection_event(tcp_client_impl& client, connection_event event) noexcept -> void {
-    LOG_I("Connection event: {}", static_cast<int>(event));
     switch (event) {
     case connection_event::connected:
-        core::logger::info("Connection established");
+        LOG_I("Connection established");
         break;
     case connection_event::closed:
-        core::logger::info("Connection closed");
+        LOG_I("Connection closed");
         break;
     case connection_event::error:
-        core::logger::error("Connection error");
+        LOG_E("Connection error");
         break;
     }
 }
 
 auto tcp_conn_pool_impl::connect_all() noexcept -> void {
     // testing purpose
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
-    create_new_client();
+    for(int i = 0; i < 10; i++) {
+        create_new_client();
+    }
 }
 
 auto tcp_conn_pool_impl::add_connection() noexcept -> void {

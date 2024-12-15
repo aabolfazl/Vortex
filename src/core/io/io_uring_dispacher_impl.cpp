@@ -27,6 +27,10 @@ void io_uring_dispacher_impl::submit_async_connect(event::connect_operation_ptr 
     core_->prepare_connect(std::move(op));
 }
 
+void io_uring_dispacher_impl::submit_async_read(event::recv_operation_ptr op) {
+    core_->prepare_recv(std::move(op));
+}
+
 auto io_uring_dispacher_impl::loop() -> void {
     core_->run();
 }

@@ -19,6 +19,7 @@ set(VORTEX_COMMON
     common/sys_calls_impl.cpp
     common/sys_calls_impl.h
     common/platform.h
+    common/error_helper.h
 )
 
 set(VORTEX_BALANCER

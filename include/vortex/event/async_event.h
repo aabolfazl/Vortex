@@ -97,7 +97,7 @@ public:
 };
 using connect_operation_ptr = std::unique_ptr<connect_operation>;
 
-class read_operation : public io_operation {
+class recv_operation : public io_operation {
 public:
     std::function<void(int)> callback_;
     os_fd_t fd_ = 0;
@@ -105,9 +105,9 @@ public:
     void* buffer_ = nullptr;
     size_t size_ = 0;
 
-    explicit read_operation(os_fd_t fd, void* buffer, size_t size, std::function<void(int)> cb) :
+    explicit recv_operation(os_fd_t fd, void* buffer, size_t size, std::function<void(int)> cb) :
         fd_(fd), buffer_(buffer), size_(size), callback_(std::move(cb)) {
-        LOG_I("read_operation created with fd: {} size: {}", fd_, static_cast<int>(size_));
+        LOG_I("recv_operation created with fd: {} size: {}", fd_, static_cast<int>(size_));
     }
 
     void complete(int result) override {
@@ -118,6 +118,6 @@ public:
         return operation_type::read;
     }
 };
-using read_operation_ptr = std::unique_ptr<read_operation>;
+using recv_operation_ptr = std::unique_ptr<recv_operation>;
 
 } // namespace vortex::event

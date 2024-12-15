@@ -70,7 +70,7 @@ auto io_uring_core_impl::prepare_accept(event::accept_operation_ptr op) noexcept
 
 auto io_uring_core_impl::prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result {
     LOG_I("Prepare connect on socket {} address {} port {}", op_ptr->fd_, op_ptr->address_->to_string(),
-                       op_ptr->address_->get_port());
+          op_ptr->address_->get_port());
 
     io_uring_sqe* sqe = io_uring_get_sqe(&ring_);
     if (sqe == nullptr) {
@@ -90,8 +90,8 @@ auto io_uring_core_impl::prepare_connect(event::connect_operation_ptr op_ptr) no
     return io_uring_result::success;
 }
 
-auto io_uring_core_impl::prepare_recv(event::read_operation_ptr op_ptr) noexcept -> io_uring_result {
-    LOG_I("Prepare recv on socket {} size {}", op_ptr->fd_, op_ptr->size_);
+auto io_uring_core_impl::prepare_recv(event::recv_operation_ptr op_ptr) noexcept -> io_uring_result {
+    LOG_I("Prepare recv on socket {} size {}", op_ptr->fd_, static_cast<int>(op_ptr->size_));
     io_uring_sqe* sqe = io_uring_get_sqe(&ring_);
     if (sqe == nullptr) {
         LOG_E("Failed to get sqe for recv operation");

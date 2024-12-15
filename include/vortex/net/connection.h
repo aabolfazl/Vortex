@@ -32,8 +32,19 @@ public:
 
 class connection : public traits::non_copyable<connection>, public traits::non_moveable<connection> {
 public:
+
     enum class connection_state { open, opeening, closing, closed };
 
+    friend auto to_string(connection_state state) -> std::string {
+        switch (state) {
+            case connection_state::open: return "open";
+            case connection_state::opeening: return "opeening";
+            case connection_state::closing: return "closing";
+            case connection_state::closed: return "closed";
+            default: return "unknown";
+        }
+    }
+    
     virtual ~connection() = default;
 
     virtual auto close() -> void = 0;
