@@ -13,7 +13,7 @@
 
 #include "io_uring.h"
 #include "common/address.h"
-#include "core/interfaces/event/async_event.h"
+#include "vortex/event/async_event.h"
 
 namespace vortex::event {
 

@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "core/interfaces/event/io_uring.h"
-#include "core/interfaces/event/io_uring_core.h"
-#include "core/interfaces/event/dispatcher.h"
-#include "core/interfaces/event/async_event.h"
+#include "vortex/event/io_uring.h"
+#include "vortex/event/io_uring_core.h"
+#include "vortex/event/dispatcher.h"
+#include "vortex/event/async_event.h"
 #include "event/io_uring_core_impl.h"
 
 namespace vortex::event {

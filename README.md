@@ -1,14 +1,20 @@
-<img src='https://github.com/aabolfazl/Vortex/assets/33707955/ecf80e50-99de-4ec5-ae4d-47315fe04457' width='900'>
+[![Build Status](https://github.com/aabolfazl/Vortex/actions/workflows/cmake-single-platform.yml/badge.svg)](https://github.com/aabolfazl/Vortex/actions/workflows/cmake-single-platform.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![C++](https://img.shields.io/badge/C++-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B17)
+[![CMake](https://img.shields.io/badge/CMake-3.10-blue)](https://cmake.org/)
+
+<img src='https://github.com/aabolfazl/Vortex/assets/33707955/ecf80e50-99de-4ec5-ae4d-47315fe04457' width='500'>
 
 **“What I cannot create. I do not understand.”**
 ― **Richard Feynman**
 
 # Vortex, Layer 4 Load Balancer using io_uring (under development 🏗️)
-This project implements a high-performance Layer 4 load balancer using **modern C++**. The architecture is inspired by **NGINX**, designed to efficiently handle high volumes of network traffic at the transport layer (TCP/UDP). The load balancer uses a **process-per-core** model and leverages **io_uring** for event-driven I/O management, ensuring low latency and scalable performance.
+This project implements a high-performance Layer 4 load balancer using **modern C++**. The architecture is inspired by **NGINX** and **Envoy proxy**, designed to efficiently handle high volumes of network traffic at the transport layer (TCP/UDP). The load balancer uses a **process-per-core** model and leverages **io_uring** for event-driven I/O management, ensuring low latency and scalable performance.
 
 ## Key Features
 
-- **Modern C++**: Written in C++20 to take advantage of features like coroutines, smart pointers, and improved concurrency handling.
+- **IO_uring**: High-performance I/O operations using io_uring
+- **Modern C++**: Written in C++17
 - **Process-per-Core**: The load balancer spawns a dedicated process for each CPU core, ensuring maximum parallelism and efficient use of system resources.
 - **Event Loop with io_uring**: The core of the load balancer revolves around an **io_uring**-based event loop. This allows the system to efficiently handle I/O operations (e.g., network connections, file descriptors) with minimal system calls and context switches.
 - **Layer 4 Protocol Handling**: Focuses on balancing traffic at the transport layer. Currently supports TCP and UDP traffic, with plans to extend protocol support.

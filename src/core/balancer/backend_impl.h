@@ -12,8 +12,8 @@
 #pragma once
 
 #include "core/config/types.h"
-#include "core/interfaces/cluster.h"
-#include "core/interfaces/event/dispatcher.h"
+#include "vortex/balancer/cluster.h"
+#include "vortex/event/dispatcher.h"
 
 namespace vortex::core {
 class backend_impl final : public backend {

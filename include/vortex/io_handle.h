@@ -14,7 +14,7 @@
 #include <cerrno>
 #include <memory>
 #include <sys/socket.h>
-#include "core/interfaces/sys_calls.h"
+#include "sys_calls.h"
 
 namespace vortex::core {
 

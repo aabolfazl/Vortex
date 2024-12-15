@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  tcp-server:
+    build: .
+    ports:
+      - "8080-9079:8080"
+    deploy:
+      replicas: 100

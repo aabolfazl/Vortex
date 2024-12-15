@@ -11,9 +11,9 @@
 
 #pragma once
 
-#include "core/interfaces/cluster.h"
-#include "core/interfaces/components_factory.h"
-#include "core/interfaces/service_node.h"
+#include "vortex/balancer/cluster.h"
+#include "vortex/balancer/components_factory.h"
+#include "vortex/service_node.h"
 
 namespace vortex::core {
 class components_factory_impl : public components_factory {
