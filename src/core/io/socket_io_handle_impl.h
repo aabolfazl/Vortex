@@ -14,7 +14,7 @@
 #include "common/platform.h"
 #include "common/sys_calls_impl.h"
 #include "common/traits.h"
-#include "vortex/io_handle.h"
+#include "vortex/net/io_handle.h"
 #include "vortex/sys_calls.h"
 
 namespace vortex::core {

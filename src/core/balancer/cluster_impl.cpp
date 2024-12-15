@@ -15,8 +15,8 @@
 
 namespace vortex::core {
 
-cluster_impl::cluster_impl(event::dispatcher_ptr dispatcher,const config::cluster_t& cluster_t) :
-    dispatcher_(dispatcher), name_(cluster_t.name), description_(cluster_t.desc), cluster_t_(cluster_t) {
+cluster_impl::cluster_impl(event::dispatcher& dispatcher, const config::cluster_t& cluster_t, const config::resource_limits_t& resource_limits) :
+    dispatcher_(dispatcher), name_(cluster_t.name), description_(cluster_t.desc), cluster_t_(cluster_t), resource_limits_(resource_limits) {
     logger::info("Cluster created with name: {} and desc {}", name_, description_);
 }
 
@@ -28,7 +28,7 @@ auto cluster_impl::initialize() -> void {
     logger::info("Cluster initializing...");
 
     for (auto& backend_t : cluster_t_.backends) {
-        auto backend_ptr = std::make_unique<backend_impl>(dispatcher_, backend_t);
+        auto backend_ptr = std::make_unique<backend_impl>(dispatcher_, backend_t, resource_limits_);
         backend_ptr->connect();
         backends_.push_back(std::move(backend_ptr));
     }

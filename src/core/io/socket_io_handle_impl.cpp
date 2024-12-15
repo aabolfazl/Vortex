@@ -28,7 +28,7 @@ socket_io_handle_impl::socket_io_handle_impl(os_fd_t fd = INVALID_SOCKET) : fd_(
 }
 
 socket_io_handle_impl::~socket_io_handle_impl() {
-    logger::info("Destroying socket io handle");
+    LOG_I("Destroying socket io handle");
     if (!close_) {
         close();
     }
@@ -52,7 +52,6 @@ int socket_io_handle_impl::fd() const {
 }
 
 api::sys_call_result socket_io_handle_impl::set_blocking(bool blocking) {
-    core::logger::info("Setting blocking to {}", blocking);
     return api::sys_calls_impl::instance().set_blocking(fd_, blocking);
 }
 
@@ -109,7 +108,7 @@ io_result socket_io_handle_impl::write(const void *buffer, size_t length) {
 
 
 void socket_io_handle_impl::close() {
-    logger::info("Closing socket");
+    LOG_I("Closing socket fd {}", fd_);
     if (fd_ != INVALID_SOCKET) {
         api::sys_calls_impl::instance().close(fd_);
         fd_ = INVALID_SOCKET;

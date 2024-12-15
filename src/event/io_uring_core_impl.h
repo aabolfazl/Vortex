@@ -17,10 +17,10 @@
 #include <netinet/in.h>
 #include <unordered_map>
 #include "common/platform.h"
+#include "liburing.h"
 #include "vortex/event/async_event.h"
 #include "vortex/event/io_uring.h"
 #include "vortex/event/io_uring_core.h"
-#include "liburing.h"
 
 namespace vortex::event {
 class io_uring_socket;
@@ -37,14 +37,8 @@ public:
     auto prepare_accept(event::accept_operation_ptr op) noexcept -> io_uring_result override;
     auto prepare_connect(event::connect_operation_ptr op_ptr) noexcept -> io_uring_result override;
 
+    auto prepare_recv(event::recv_operation_ptr opt_ptr) noexcept -> io_uring_result override;
 
-    auto prepare_readv(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
-                       io_request *user_data) noexcept -> io_uring_result override;
-    auto prepare_writev(os_fd_t fd, const iovec *iovecs, unsigned nr_vecs, off_t offset,
-                        io_request *user_data) noexcept -> io_uring_result override;
-    auto prepare_close(os_fd_t fd, io_request *user_data) noexcept -> io_uring_result override;
-    auto prepare_cancel(io_request *cancelling_user_data, io_request *user_data) noexcept -> io_uring_result override;
-    auto prepare_shutdown(os_fd_t fd, int how, io_request *user_data) noexcept -> io_uring_result override;
     auto submit() noexcept -> io_uring_result override;
     auto run() noexcept -> void override;
     auto exit() noexcept -> void override;

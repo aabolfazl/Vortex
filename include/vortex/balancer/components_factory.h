@@ -19,7 +19,7 @@ namespace vortex::core {
 
 class components_factory : traits::non_copyable<components_factory>, traits::non_moveable<components_factory> {
 public:
-    virtual auto create_cluster_manager(event::dispatcher_ptr dispatcher) -> cluster_manager_ptr = 0;
+    virtual auto create_cluster_manager(event::dispatcher& dispatcher) -> cluster_manager_ptr = 0;
 };
 using componnent_factory_ptr = std::shared_ptr<components_factory>;
 

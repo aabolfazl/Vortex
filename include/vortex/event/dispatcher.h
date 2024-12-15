@@ -27,7 +27,7 @@ public:
 
     virtual auto submit_async_accept(accept_operation_ptr op) -> void = 0;
     virtual auto submit_async_connect(connect_operation_ptr op) -> void = 0;
-
+    virtual auto submit_async_read(recv_operation_ptr op) -> void = 0;
     
     virtual auto loop() -> void = 0;
 

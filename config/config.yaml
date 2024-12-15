@@ -2,8 +2,8 @@
 
 runtime:
   workers:
-    mode: "auto"
-    count: 0
+    mode: "fixed"
+    count: 1
 
 listeners:
   - name: "main_listener"
@@ -62,7 +62,7 @@ timeouts:
   write: 30
 
 resource_limits:
-  max_connections: 10000
+  max_connections: 40
   max_files: 1024
 
 buffers:

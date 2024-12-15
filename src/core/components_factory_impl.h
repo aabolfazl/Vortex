@@ -18,7 +18,7 @@
 namespace vortex::core {
 class components_factory_impl : public components_factory {
 public:
-    auto create_cluster_manager(event::dispatcher_ptr dispatcher) -> cluster_manager_ptr override;
+    auto create_cluster_manager(event::dispatcher& dispatcher) -> cluster_manager_ptr override;
 };
 
 } // namespace vortex::core

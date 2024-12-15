@@ -28,7 +28,7 @@ auto service_node_impl::init() noexcept -> void {
 
     // init cluster manager
 
-    cluster_manager_ = factory_->create_cluster_manager(dispatcher_);
+    cluster_manager_ = factory_->create_cluster_manager(*dispatcher_);
     cluster_manager_->initialize(config_manager_);
     // init health check
 

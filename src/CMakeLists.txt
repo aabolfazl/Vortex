@@ -19,6 +19,7 @@ set(VORTEX_COMMON
     common/sys_calls_impl.cpp
     common/sys_calls_impl.h
     common/platform.h
+    common/error_helper.h
 )
 
 set(VORTEX_BALANCER
@@ -29,6 +30,17 @@ set(VORTEX_BALANCER
     core/balancer/backend_impl.h
     core/balancer/backend_impl.cpp
 )
+
+
+set(VORTEX_TCP_CONNECTION_POOL
+    core/net/connection_factory_impl.h
+    core/net/connection_factory_impl.cpp
+    core/net/tcp_conn_pool_impl.h
+    core/net/tcp_conn_pool_impl.cpp
+    core/net/client_connection_impl.h
+    core/net/client_connection_impl.cpp
+)
+
 
 set(VORTEX_LISTENER
     core/listener/listener_manager.h
@@ -51,6 +63,7 @@ add_library(vortex STATIC
     ${VORTEX_CONFIG}
     ${VORTEX_COMMON}
     ${VORTEX_CORE}
+    ${VORTEX_TCP_CONNECTION_POOL}
     ${VORTEX_LISTENER}
     ${VORTEX_BALANCER}
 )

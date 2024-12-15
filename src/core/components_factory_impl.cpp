@@ -16,7 +16,7 @@
 #include <memory>
 
 namespace vortex::core {
-auto components_factory_impl::create_cluster_manager(event::dispatcher_ptr dispatcher) -> cluster_manager_ptr {
+auto components_factory_impl::create_cluster_manager(event::dispatcher& dispatcher) -> cluster_manager_ptr {
     return std::make_shared<cluster_manager_impl>(dispatcher);
 }
 
